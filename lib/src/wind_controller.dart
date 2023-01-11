@@ -21,6 +21,7 @@ class WindController extends ChangeNotifier{
   final bool allowFullScreen;
   final bool allowMuting;
   final bool allowPlaybackSpeedChanging;
+  final bool allowPip;
   final Duration? startPos;
   final bool fullScreenByDefault;
   final WindRoutePageBuilder? routePageBuilder;
@@ -52,6 +53,7 @@ class WindController extends ChangeNotifier{
     this.allowFullScreen=true,
     this.allowMuting=false,
     this.allowPlaybackSpeedChanging= true,
+    this.allowPip=false,
     this.startPos,
     this.fullScreenByDefault=false,
     this.routePageBuilder,

@@ -3,6 +3,8 @@ import 'package:video_player/video_player.dart';
 import 'package:windmill/src/progress_bar.dart';
 import 'package:windmill/src/util/asset_utils.dart';
 import 'package:windmill/src/util/color_utils.dart';
+import 'package:windmill/src/util/widget_utils.dart';
+import 'package:windmill/src/util/wind_button.dart';
 import 'package:windmill/windmill.dart';
 
 class PlayerControls extends StatefulWidget {
@@ -31,7 +33,6 @@ class PlayerControls extends StatefulWidget {
 
   /// 画中画点击
   final Function? onPipClick;
-
 
   ///设置点击
   final Function? onSettingClick;
@@ -77,20 +78,14 @@ class _PlayerControlsState extends State<PlayerControls>
   bool isPlaying = true;
   final _handler = AbsEventHandlerImpl.instance.mHandler;
 
-  // ActionEventHandler? _handler;
-  // @override
-  // void setActionEventHandler(ActionEventHandler handler) {
-  //   _handler = handler;
-  // }
-
   @override
   void initState() {
     super.initState();
     widget.controller.addListener(_updateState);
     _animationController =
-        AnimationController(duration: Duration(milliseconds: 300), vsync: this);
+        AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
     _settingAnimController =
-        AnimationController(duration: Duration(milliseconds: 200), vsync: this);
+        AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
     _changeOpacity =
         Tween(begin: 1.0, end: 0.0).animate(_animationController); //修改透明度
     _changePosition =
@@ -118,7 +113,9 @@ class _PlayerControlsState extends State<PlayerControls>
         // _showPlay=false;
       }
     }
-    _handler?.onVideoProgress?.call(_currentPos==const Duration(seconds: 0)?'00:00':_processDuration(_currentPos));
+    _handler?.onVideoProgress?.call(_currentPos == const Duration(seconds: 0)
+        ? '00:00'
+        : _processDuration(_currentPos));
     setState(() {});
   }
 
@@ -128,12 +125,7 @@ class _PlayerControlsState extends State<PlayerControls>
     super.dispose();
   }
 
-  Widget _buildImage(String iconName,{bool isPNG=true}){
-    return Image.asset(isPNG?AssetUtils.getAssetImagePNG(iconName):AssetUtils.getAssetImage(iconName),
-    width: 24,
-    height: 24,
-    package:'windmill',);
-  }
+
   _buildTopButtons() {
     WindController windController = WindController.of(context);
     return SafeArea(
@@ -145,16 +137,16 @@ class _PlayerControlsState extends State<PlayerControls>
               child: Transform.translate(
                   offset: Offset(0.0, _changePosition.value),
                   child: Container(
+                    margin: EdgeInsets.only(left:windController.isFullScreen?32:10,right:windController.isFullScreen?32:10,top: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            GestureDetector(
-                              onTap: () {
+                            WindButton(
+                                onPressed: () {
                                   debugPrint(
                                       'wind============onBackClick icon_back');
-                                  var x = windController.isPlaying;
                                   bool _isFullScreen =
                                       MediaQuery.of(context).orientation ==
                                           Orientation.landscape;
@@ -165,8 +157,7 @@ class _PlayerControlsState extends State<PlayerControls>
                                     _handler?.onBackClick?.call();
                                   }
                                 },
-                              child: _buildImage('icon_back')
-                            ),
+                                child: buildImage('icon_back',width: 25,height:25,padding: EdgeInsets.all(0))),
                             Container(
                                 child: Text(widget.title,
                                     style: const TextStyle(
@@ -177,24 +168,29 @@ class _PlayerControlsState extends State<PlayerControls>
                         ),
                         Row(
                           children: [
-                            IconButton(
-                                onPressed: () {
-                                  _handler?.onCollectClick?.call();
-                                }, icon: _buildImage('icon_star'),
-                              ),
+                            windController.isFullScreen?
+                            WindButton(
+                              onPressed: () {
+                                _handler?.onCollectClick?.call();
+                              },
+                              child: buildImage('icon_star',margin:const EdgeInsets.only(right: 10)),
+                            ):const SizedBox(),
                             // Container(
                             //   color: Colors.red,
                             // )
-                            IconButton(
-                                onPressed: () {
-                                  _handler?.onShareClick?.call();
-                                },
-                                icon:_buildImage('icon_share'),),
-                               IconButton(
-                                onPressed: () {
-                                  _handler?.onShareClick?.call();
-                                },
-                                icon:_buildImage('icon_setting'),)
+                            WindButton(
+                              onPressed: () {
+                                _handler?.onShareClick?.call();
+                              },
+                              child: buildImage('icon_share'),
+                            ),
+                            windController.isFullScreen?
+                            WindButton(
+                              onPressed: () {
+                                _handler?.onShareClick?.call();
+                              },
+                              child: buildImage('icon_setting',margin:const EdgeInsets.only(left: 10)),
+                            ):const SizedBox()
                           ],
                         )
                       ],
@@ -217,7 +213,8 @@ class _PlayerControlsState extends State<PlayerControls>
             opacity: _changeOpacity.value,
             child: Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal:windController.isFullScreen?32:16),
+              margin: EdgeInsets.only(bottom: windController.isFullScreen?20:5),
               height: widget.bottomHeight,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -227,7 +224,7 @@ class _PlayerControlsState extends State<PlayerControls>
                       style: TextStyle(color: Colors.white, fontSize: 12)),
                   Expanded(
                       child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: VideoProgressBar(
                       widget.controller,
                       barHeight: 6,
@@ -241,21 +238,21 @@ class _PlayerControlsState extends State<PlayerControls>
                   ),
                   Row(
                     children: [
-                      IconButton(
-                        padding: EdgeInsets.zero,
+                      windController.allowPip?
+                      WindButton(
                         onPressed: () {
                           _handler?.onPipClick?.call();
                         },
-                        icon: _buildImage('icon_pip'),
-                      ),
-                      IconButton(
-                          padding: EdgeInsets.zero,
+                        child: buildImage('icon_pip'),
+                      ):const SizedBox(),
+                      WindButton(
                           onPressed: () {
                             _handler?.onRotateScreenClick
                                 ?.call(windController.isFullScreen);
-                            windController.toggleFullScreen();//设置controller中isFullScreen状态
+                            windController
+                                .toggleFullScreen(); //设置controller中isFullScreen状态
                           },
-                          icon: _buildImage('icon_rotate_screen_v'))
+                          child: buildImage('icon_rotate_screen_v',padding: const EdgeInsets.only(left: 5,top: 5,bottom: 5)))
                     ],
                   )
                 ],
@@ -277,18 +274,19 @@ class _PlayerControlsState extends State<PlayerControls>
   _buildPlayButton() {
     return Center(
       child: Container(
-        child: IconButton(
+        child: WindButton(
             onPressed: () {
               var controller = widget.controller;
+                _handler?.onPlayClick?.call(controller.value.isPlaying);
               if (controller.value.isPlaying) {
                 controller.pause();
               } else {
                 controller.play();
               }
             },
-            icon: widget.controller.value.isPlaying && isPlaying
-                  ? _buildImage('icon_video_pause')
-                  : _buildImage('icon_video_play.jpg',isPNG: false)),
+            child: widget.controller.value.isPlaying && isPlaying
+                ? buildImage('icon_video_pause')
+                : buildImage('icon_video_play.jpg', isPNG: false)),
       ),
     );
   }

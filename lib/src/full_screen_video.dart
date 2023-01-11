@@ -10,7 +10,22 @@ import 'package:windmill/src/wind_video_player.dart';
 
 class FullScreenVideo extends StatefulWidget {
   final WindController controller;
-  const FullScreenVideo({Key? key,required this.controller}) : super(key: key);
+
+  /// 是否收藏
+  final bool hasCollected;
+
+  /// 标题
+  final String title;
+
+  ///字幕
+  final String subtitle;
+  const FullScreenVideo(
+      {Key? key,
+      required this.controller,
+      this.hasCollected = false,
+      this.title = '',
+      this.subtitle = ''})
+      : super(key: key);
 
   @override
   State<FullScreenVideo> createState() => _FullScreenVideoState();
@@ -84,11 +99,12 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     debugPrint('wind==================走了');
     return Scaffold(
+      backgroundColor: Colors.black,
       body: WindControllerProvider(
           controller: widget.controller,
           child: ChangeNotifierProvider<PlayerNotifier>.value(
             value: notifier,
-            builder: (context, widget) {
+            builder: (context, child) {
               return GestureDetector(
                 onTap: () {},
                 onVerticalDragDown: (v) {},
@@ -107,7 +123,7 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
                   notifier.setShowVolumeProgress(false);
                   notifier.setShowBrightnessProgress(false);
                 },
-                child: VideoPlayerWithControls(volumeProgress: _volumeProgress),
+                child: VideoPlayerWithControls(volumeProgress: _volumeProgress,subtitle:widget.subtitle,),
               );
             },
           )),

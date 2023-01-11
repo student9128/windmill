@@ -83,7 +83,6 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
     super.initState();
     widget.controller.addListener(listener);
     notifier = PlayerNotifier.init();
-    // _initVolumeAndBrightness();
   }
 
   _initVolumeAndBrightness() async {
@@ -109,7 +108,7 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
       debugPrint('wind=========windVideo enterFull');
       Navigator.of(context)
           .push(CupertinoPageRoute(builder: (BuildContext context) {
-        return FullScreenVideo(controller: widget.controller);
+        return FullScreenVideo(controller: widget.controller,subtitle: widget.subtitle,);
       })).then((value) {
         debugPrint('wind=========windVideo back');
         // _initVolumeAndBrightness();

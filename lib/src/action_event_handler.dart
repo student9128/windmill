@@ -8,6 +8,11 @@ class ActionEventHandler {
   /// 视频进度回调
   Function(String time)? onVideoProgress;
 
+  ///播放/暂停按钮点击
+  ///
+  ///isPlaying 点击的时候是否播放
+  Function(bool isPlaying)? onPlayClick;
+
   /// 收藏点击
   Function? onCollectClick;
 
@@ -20,13 +25,13 @@ class ActionEventHandler {
   ///设置点击
   Function? onSettingClick;
 
-  ActionEventHandler({
-    this.onBackClick,
-    this.onRotateScreenClick,
-    this.onVideoProgress,
-    this.onCollectClick,
-    this.onShareClick,
-    this.onPipClick,
-    this.onSettingClick
-  });
+  ActionEventHandler(
+      {this.onBackClick,
+      this.onRotateScreenClick,
+      this.onVideoProgress,
+      this.onPlayClick,
+      this.onCollectClick,
+      this.onShareClick,
+      this.onPipClick,
+      this.onSettingClick});
 }
