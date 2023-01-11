@@ -1,5 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:windmill/src/linear_percent_indiacator.dart';
+import 'package:windmill/src/player_notifier.dart';
 import 'package:windmill/src/progress_bar.dart';
 import 'package:windmill/src/util/asset_utils.dart';
 import 'package:windmill/src/util/color_utils.dart';
@@ -77,10 +82,12 @@ class _PlayerControlsState extends State<PlayerControls>
   int _equalCount = 0;
   bool isPlaying = true;
   final _handler = AbsEventHandlerImpl.instance.mHandler;
-
+  late PlayerNotifier playerNotifier;
+  Timer? _mTimer;
   @override
   void initState() {
     super.initState();
+    playerNotifier=PlayerNotifier.init();
     widget.controller.addListener(_updateState);
     _animationController =
         AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
@@ -90,6 +97,7 @@ class _PlayerControlsState extends State<PlayerControls>
         Tween(begin: 1.0, end: 0.0).animate(_animationController); //修改透明度
     _changePosition =
         Tween(begin: 0.0, end: -15.0).animate(_animationController);
+    _hideWidget();
   }
 
   _updateState() {
@@ -122,9 +130,22 @@ class _PlayerControlsState extends State<PlayerControls>
   @override
   void dispose() {
     widget.controller.removeListener(_updateState);
+    _mTimer?.cancel();
     super.dispose();
   }
 
+_showWidget() {
+    _animationController.reverse();
+    playerNotifier.setShowWidget(true);
+    _mTimer = Timer(const Duration(seconds: 3), () {
+      _hideWidget();
+    });
+  }
+
+  _hideWidget() {
+    _animationController.forward();
+    playerNotifier.setShowWidget(false);
+  }
 
   _buildTopButtons() {
     WindController windController = WindController.of(context);
@@ -273,21 +294,52 @@ class _PlayerControlsState extends State<PlayerControls>
 
   _buildPlayButton() {
     return Center(
-      child: Container(
-        child: WindButton(
-            onPressed: () {
-              var controller = widget.controller;
-                _handler?.onPlayClick?.call(controller.value.isPlaying);
-              if (controller.value.isPlaying) {
-                controller.pause();
-              } else {
-                controller.play();
-              }
-            },
-            child: widget.controller.value.isPlaying && isPlaying
-                ? buildImage('icon_video_pause')
-                : buildImage('icon_video_play.jpg', isPNG: false)),
+      child: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          return Opacity(
+            opacity: _changeOpacity.value,
+            child: WindButton(
+                onPressed: () {
+                  var controller = widget.controller;
+                  _handler?.onPlayClick?.call(controller.value.isPlaying);
+                  if (controller.value.isPlaying) {
+                    controller.pause();
+                    _showWidget();
+                  } else {
+                    controller.play();
+                    _hideWidget();
+                  }
+                },
+                child: widget.controller.value.isPlaying && isPlaying
+                    ? buildImage('icon_video_pause')
+                    : buildImage('icon_video_play.jpg', isPNG: false)),
+          );
+        },
       ),
+    );
+  }
+  _buildLockButton() {
+    playerNotifier=Provider.of<PlayerNotifier>(context);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(right: 16),
+          child: WindButton(
+              onPressed: () {
+                if(playerNotifier.isLocked){
+                  playerNotifier.setLocked(false);
+                  _showWidget();
+                }else{
+                  playerNotifier.setLocked(true);
+                  _hideWidget();
+                }
+              },
+              child: buildImage(playerNotifier.isLocked?'icon_screen_locked':'icon_screen_unlocked',
+                  width: 50, height: 50, padding: EdgeInsets.zero)),
+        )
+      ],
     );
   }
 
@@ -315,38 +367,144 @@ class _PlayerControlsState extends State<PlayerControls>
 
   @override
   Widget build(BuildContext context) {
-    // return Container(
-    //   width: MediaQuery.of(context).size.width,
-    //   height: MediaQuery.of(context).size.height,
-    //   // color: Colors.amber,
-    // child: Stack(
-    //
-    //   children: [Positioned(
-    // bottom: 100,
-    // left: 0,
-    // child: Container(child: Text('d12222222'),color: Colors.deepOrangeAccent,),),
-    //   Positioned(child: Container(color: Colors.green,width: 10,height: 10,))],
-    // ),);
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      // height: MediaQuery.of(context).size.height,
-      child: Stack(
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    WindController windController = WindController.of(context);
+    playerNotifier = Provider.of<PlayerNotifier>(context);
+    return GestureDetector(
+        onTap: () {
+          if (playerNotifier.isLocked) return;
+          if (playerNotifier.showWidget) {
+            _hideWidget();
+          } else {
+            _showWidget();
+          }
+        },
+        onHorizontalDragDown: (v) {},
+        onHorizontalDragUpdate: (v) {},
+        onHorizontalDragCancel: () {},
+        onHorizontalDragStart: (v) {},
+        onHorizontalDragEnd: (v) {},
+        onVerticalDragDown: (v) {},
+        onVerticalDragUpdate: (v) {
+          var screenWidth = MediaQuery.of(context).size.width;
+          var dy = v.delta.dy;
+          var dx = v.localPosition.dx;
+          if (dx < screenWidth / 2) {
+            playerNotifier.setBrightnessProgress(dy);
+          } else {
+            playerNotifier.setVolumeProgress(dy);
+          }
+        },
+        onVerticalDragCancel: () {},
+        onVerticalDragStart: (v) {},
+        onVerticalDragEnd: (v) {
+          debugPrint('wind============onVerticalDragEnd');
+          playerNotifier.setShowVolumeProgress(false);
+          playerNotifier.setShowBrightnessProgress(false);
+          setState(() {});
+        },
+        child: Container(
+          color: Colors.transparent,
+          width: MediaQuery.of(context).size.width,
+          // height: MediaQuery.of(context).size.height,
+          child: Stack(
             children: [
-              _buildTopButtons(),
-              Container(
-                // color: Colors.yellowAccent,
-                child: Column(
-                  children: [_buildSubtitles(), _buildBottomButtons()],
-                ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildTopButtons(),
+                  Container(
+                    // color: Colors.yellowAccent,
+                    child: Column(
+                      children: [_buildSubtitles(), _buildBottomButtons()],
+                    ),
+                  ),
+                ],
+              ),
+              _buildPlayButton(),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  windController.isFullScreen
+                      ? _buildLockButton()
+                      : const SizedBox(),
+                ],
+              ),
+              playerNotifier.showVolumeProgress
+                  ? _buildVolumeProgress(playerNotifier: playerNotifier)
+                  : const SizedBox(),
+              playerNotifier.showBrightnessProgress
+                  ? _buildBrightnessProgress(playerNotifier: playerNotifier)
+                  : const SizedBox(),
+            ],
+          ),
+        ));
+  }
+}
+
+class _buildBrightnessProgress extends StatelessWidget {
+  const _buildBrightnessProgress({
+    Key? key,
+    required this.playerNotifier,
+  }) : super(key: key);
+
+  final PlayerNotifier playerNotifier;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        alignment: Alignment.center,
+        child: Container(
+          width: 200,
+          height: 50,
+          decoration: BoxDecoration(
+              color: const Color(0xe0000000),
+              borderRadius: BorderRadius.circular(5.0)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              buildImage('icon_brightness'),
+              LinearPercentIndicator(
+                width: 140,
+                progressColor:const Color(0xffFFECC8),
+                percent: playerNotifier.brightnessProgress,
+                barRadius: const Radius.circular(5),
               )
             ],
           ),
-          _buildPlayButton()
-        ],
-      ),
-    );
+        ));
+  }
+}
+
+class _buildVolumeProgress extends StatelessWidget {
+  const _buildVolumeProgress({
+    Key? key,
+    required this.playerNotifier,
+  }) : super(key: key);
+
+  final PlayerNotifier playerNotifier;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        alignment: Alignment.center,
+        child: Container(
+          width: 200,
+          height: 50,
+          decoration: BoxDecoration(
+              color: const Color(0xe0000000),
+              borderRadius: BorderRadius.circular(5.0)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              buildImage('icon_volume'),
+              LinearPercentIndicator(
+                width: 140,
+                progressColor:const Color(0xffFFECC8),
+                percent: playerNotifier.volumeProgress,
+                barRadius: const Radius.circular(5),
+              )
+            ],
+          ),
+        ));
   }
 }

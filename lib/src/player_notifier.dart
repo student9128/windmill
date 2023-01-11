@@ -19,7 +19,8 @@ class PlayerNotifier extends ChangeNotifier {
   bool _showVolumeProgress = false;
   bool get showVolumeProgress => _showVolumeProgress;
   void setShowVolumeProgress(bool b) {
-    _showVolumeProgress = b;
+    debugPrint('wind========setShow $b');
+    _showVolumeProgress =b;
     notifyListeners();
   }
 
@@ -32,6 +33,7 @@ class PlayerNotifier extends ChangeNotifier {
   static double _volumeProgress = 0.0;
   double get volumeProgress => _volumeProgress;
   void setVolumeProgress(double dy) async {
+    debugPrint('wind========setShow setVolumeProgress dy');
     _volumeProgress = _volumeProgress - dy / 100;
     if (_volumeProgress <= 0) {
       _volumeProgress = 0;
@@ -39,7 +41,7 @@ class PlayerNotifier extends ChangeNotifier {
     if (_volumeProgress > 1.0) {
       _volumeProgress = 1.0;
     }
-    await PerfectVolumeControl.setVolume(_volumeProgress);
+    PerfectVolumeControl.setVolume(_volumeProgress);
     if(!showVolumeProgress){
     _showVolumeProgress = true;
     }
@@ -56,7 +58,7 @@ class PlayerNotifier extends ChangeNotifier {
     if (_brightnessProgress > 1.0) {
       _brightnessProgress = 1.0;
     }
-    await DeviceDisplayBrightness.setBrightness(_brightnessProgress);
+    DeviceDisplayBrightness.setBrightness(_brightnessProgress);
     if(!_showBrightnessProgress){
       _showBrightnessProgress=true;
     }
@@ -67,6 +69,25 @@ class PlayerNotifier extends ChangeNotifier {
     PerfectVolumeControl.hideUI = true;
     _volumeProgress = await PerfectVolumeControl.getVolume();
     _brightnessProgress = await DeviceDisplayBrightness.getBrightness();
+  }
+
+  bool _isLocked = false;
+  bool get isLocked => _isLocked;
+  void setLocked(bool b) {
+    if (_isLocked == b) return;
+    _isLocked = b;
+    notifyListeners();
+  }
+  bool _showWidget = false;
+  bool get showWidget =>_showWidget;
+  void setShowWidget(bool b){
+    _showWidget=b;
+    notifyListeners();
+  }
+
+  void toggleLocked() {
+    _isLocked = !_isLocked;
+    notifyListeners();
   }
 
   // ignore: prefer_constructors_over_static_methods

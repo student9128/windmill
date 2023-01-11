@@ -95,15 +95,6 @@ class WindController extends ChangeNotifier{
     notifyListeners();
   }
 
-  bool _showVolumeProgress = false;
-  bool get showVolumeProgress => _showVolumeProgress;
-  void setShowVolumeProgress(bool b) {
-    // if(_showVolumeProgress&&b)return;
-    debugPrint('hello=========$b');
-    _showVolumeProgress = b;
-    notifyListeners();
-  }
-
   Future<void> play() async {
     await videoPlayerController.play();
   }

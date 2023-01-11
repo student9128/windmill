@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
 import 'package:provider/provider.dart';
 import 'package:windmill/src/full_screen_video.dart';
+import 'package:windmill/src/linear_percent_indiacator.dart';
 import 'package:windmill/src/player_notifier.dart';
+import 'package:windmill/src/util/widget_utils.dart';
 import 'package:windmill/src/video_player_with_controls.dart';
 import 'package:windmill/src/wind_controller.dart';
 
@@ -132,32 +134,14 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    var screenWidth = MediaQuery.of(context).size.width;
     return WindControllerProvider(
         controller: widget.controller,
         child: ChangeNotifierProvider<PlayerNotifier>.value(
           value: notifier,
           builder: (BuildContext context,Widget? child) {
-            return GestureDetector(
-              onTap: () {},
-              onVerticalDragDown: (v) {},
-              onVerticalDragUpdate: (v) {
-                var dy = v.delta.dy;
-                var dx = v.localPosition.dx;
-                if (dx < screenWidth / 2) {
-                  notifier.setBrightnessProgress(dy);
-                } else {
-                  notifier.setVolumeProgress(dy);
-                }
-              },
-              onVerticalDragCancel: () {
-              },
-              onVerticalDragEnd: (v){
-                notifier.setShowVolumeProgress(false);
-                notifier.setShowBrightnessProgress(false);
-                
-              },
-              child: VideoPlayerWithControls(
+            return 
+VideoPlayerWithControls(
+                notifier: notifier,
                 volumeProgress: _volumeProgress,
                 showControls:true,
                 title:widget.title,
@@ -195,7 +179,6 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
                   //time是当前播放到的时间position
                   widget.onVideoProgress?.call(time);
                 },
-              ),
             );
           },
         ));

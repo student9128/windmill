@@ -109,6 +109,7 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
                 onTap: () {},
                 onVerticalDragDown: (v) {},
                 onVerticalDragUpdate: (v) {
+                  if(notifier.isLocked)return;
                   var screenWidth = MediaQuery.of(context).size.width;
                   var dy = v.delta.dy;
                   var dx = v.localPosition.dx;
@@ -120,6 +121,7 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
                 },
                 onVerticalDragCancel: () {},
                 onVerticalDragEnd: (v) {
+                  if(notifier.isLocked)return;
                   notifier.setShowVolumeProgress(false);
                   notifier.setShowBrightnessProgress(false);
                 },

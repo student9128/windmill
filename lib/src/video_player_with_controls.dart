@@ -43,6 +43,8 @@ class VideoPlayerWithControls extends StatefulWidget {
   ///字幕
   final String subtitle;
 
+  final PlayerNotifier? notifier;
+
 
   const VideoPlayerWithControls(
       {Key? key,
@@ -57,7 +59,8 @@ class VideoPlayerWithControls extends StatefulWidget {
       this.onVideoProgress,
       this.hasCollected = false,
       this.title = '',
-      this.subtitle = '',})
+      this.subtitle = '',
+      this.notifier})
       : super(key: key);
 
   @override
@@ -84,6 +87,7 @@ class _VideoPlayerWithControlsState extends State<VideoPlayerWithControls> {
     Widget buildPlayerWithControls(
         BuildContext context, WindController windController) {
           debugPrint('widget.notifier.showVolumeProgress===${playerNotifier.showVolumeProgress}');
+          debugPrint('widget.notifier.showVolumeProgress=widget==${widget.notifier?.showVolumeProgress}');
       return Stack(
         children: [
           Center(
@@ -93,58 +97,59 @@ class _VideoPlayerWithControlsState extends State<VideoPlayerWithControls> {
               child: VideoPlayer(windController.videoPlayerController),
             ),
           ),
-          playerNotifier.showVolumeProgress
-              ? Container(
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: 200,
-                    height: 50,
-                    decoration: BoxDecoration(
-                        color: Color(0xe0000000),
-                        borderRadius: BorderRadius.circular(5.0)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        buildImage('icon_volume'),
-                        LinearPercentIndicator(
-                          width: 140,
-                          progressColor:const Color(0xffFFECC8),
-                          percent: playerNotifier.volumeProgress,
-                          barRadius: Radius.circular(5),
-                        )
-                      ],
-                    ),
-                  ))
-              : const SizedBox(),
-          playerNotifier.showBrightnessProgress
-              ? Container(
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: 200,
-                    height: 50,
-                    decoration: BoxDecoration(
-                        color: const Color(0xe0000000),
-                        borderRadius: BorderRadius.circular(5.0)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        buildImage('icon_brightness'),
-                        LinearPercentIndicator(
-                          width: 140,
-                          progressColor:const Color(0xffFFECC8),
-                          percent: playerNotifier.brightnessProgress,
-                          barRadius: const Radius.circular(5),
-                        )
-                      ],
-                    ),
-                  ))
-              : const SizedBox(),
+          // playerNotifier.showVolumeProgress
+          //     ? Container(
+          //         alignment: Alignment.center,
+          //         child: Container(
+          //           width: 200,
+          //           height: 50,
+          //           decoration: BoxDecoration(
+          //               color: const Color(0xe0000000),
+          //               borderRadius: BorderRadius.circular(5.0)),
+          //           child: Row(
+          //             mainAxisAlignment: MainAxisAlignment.center,
+          //             children: [
+          //               buildImage('icon_volume'),
+          //               LinearPercentIndicator(
+          //                 width: 140,
+          //                 progressColor:const Color(0xffFFECC8),
+          //                 percent: playerNotifier.volumeProgress,
+          //                 barRadius: const Radius.circular(5),
+          //               )
+          //             ],
+          //           ),
+          //         ))
+          //     : Container(),
+          // playerNotifier.showBrightnessProgress
+          //     ? Container(
+          //         alignment: Alignment.center,
+          //         child: Container(
+          //           width: 200,
+          //           height: 50,
+          //           decoration: BoxDecoration(
+          //               color: const Color(0xe0000000),
+          //               borderRadius: BorderRadius.circular(5.0)),
+          //           child: Row(
+          //             mainAxisAlignment: MainAxisAlignment.center,
+          //             children: [
+          //               buildImage('icon_brightness'),
+          //               LinearPercentIndicator(
+          //                 width: 140,
+          //                 progressColor:const Color(0xffFFECC8),
+          //                 percent: playerNotifier.brightnessProgress,
+          //                 barRadius: const Radius.circular(5),
+          //               )
+          //             ],
+          //           ),
+          //         ))
+          //     : const SizedBox(),
           Container(
-              // color: Colors.blue,
               child: PlayerControls(
             controller: windController.videoPlayerController,
             subTitle: widget.subtitle,
-            onBackClick: widget.onBackClick?.call(),
+            onBackClick: () {
+              widget.onBackClick?.call();
+            },
           ))
         ],
       );
