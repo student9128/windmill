@@ -13,6 +13,9 @@ class ActionEventHandler {
   ///isPlaying 点击的时候是否播放
   Function(bool isPlaying)? onPlayClick;
 
+  ///后台播放开关是否打开点击
+  Function(bool allowBackgroundPlay)? onBackgroundPlayClick;
+
   /// 收藏点击
   Function? onCollectClick;
 
@@ -30,6 +33,7 @@ class ActionEventHandler {
       this.onRotateScreenClick,
       this.onVideoProgress,
       this.onPlayClick,
+      this.onBackgroundPlayClick,
       this.onCollectClick,
       this.onShareClick,
       this.onPipClick,

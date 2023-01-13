@@ -90,6 +90,25 @@ class PlayerNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _showSettingModal = false;
+  bool get showSettingModal =>_showSettingModal;
+  void setShowSettingModal(bool b){
+    _showSettingModal=b;
+    notifyListeners();
+  }
+  bool _allowBackgroundPlay = true;
+  bool get allowBackgroundPlay => _allowBackgroundPlay;
+  void setAllowBackgroundPlay(bool b) {
+    _allowBackgroundPlay = b;
+    notifyListeners();
+  }
+  int _currentSpeedIndex=0;
+  int get currentSpeedIndex=>_currentSpeedIndex;
+  void setCurrentSpeedIndex(int index){
+    _currentSpeedIndex=index;
+    notifyListeners();
+  }
+
   // ignore: prefer_constructors_over_static_methods
   static PlayerNotifier init() {
     _initVolumeAndBrightness();

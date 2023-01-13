@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:windmill/src/constant.dart';
 import 'package:windmill/src/linear_percent_indiacator.dart';
 import 'package:windmill/src/player_notifier.dart';
 import 'package:windmill/src/progress_bar.dart';
@@ -73,26 +75,41 @@ class PlayerControls extends StatefulWidget {
 }
 
 class _PlayerControlsState extends State<PlayerControls>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin,WidgetsBindingObserver {
   late AnimationController _animationController, _settingAnimController;
   late Animation _changeOpacity;
   late Animation _changePosition;
-  Duration _currentPos = Duration(seconds: 0);
+  late Animation _settingModalRight;
+  Duration _currentPos = const Duration(seconds: 0);
   Duration? _oldPos;
   int _equalCount = 0;
   bool isPlaying = true;
   final _handler = AbsEventHandlerImpl.instance.mHandler;
   late PlayerNotifier playerNotifier;
   Timer? _mTimer;
+  int _currentSpeedIndex=0;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
     playerNotifier=PlayerNotifier.init();
     widget.controller.addListener(_updateState);
     _animationController =
         AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
     _settingAnimController =
-        AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
+        AnimationController(duration: const Duration(milliseconds:300), vsync: this);
+     _settingModalRight =
+        Tween(begin: 300.0, end: 0.0).animate(_settingAnimController)
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.dismissed) {
+              playerNotifier.setShowSettingModal(false);
+            }
+          })
+          ..addListener(() {
+            // debugPrint('_settingModalRight.value=${_settingModalRight.value}');
+            // setState(() {});
+          });
     _changeOpacity =
         Tween(begin: 1.0, end: 0.0).animate(_animationController); //修改透明度
     _changePosition =
@@ -178,7 +195,7 @@ _showWidget() {
                                     _handler?.onBackClick?.call();
                                   }
                                 },
-                                child: buildImage('icon_back',width: 25,height:25,padding: EdgeInsets.all(0))),
+                                child: buildImage('icon_back',width: 25,height:25,padding: const EdgeInsets.all(0))),
                             Container(
                                 child: Text(widget.title,
                                     style: const TextStyle(
@@ -208,7 +225,13 @@ _showWidget() {
                             windController.isFullScreen?
                             WindButton(
                               onPressed: () {
-                                _handler?.onShareClick?.call();
+                                _handler?.onSettingClick?.call();
+                                // if(playerNotifier.showSettingModal){
+                                //   _hideSettingModal();
+                                // }else{
+
+                               _showSettingModal();
+                                // }
                               },
                               child: buildImage('icon_setting',margin:const EdgeInsets.only(left: 10)),
                             ):const SizedBox()
@@ -242,7 +265,7 @@ _showWidget() {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(position,
-                      style: TextStyle(color: Colors.white, fontSize: 12)),
+                      style: const TextStyle(color: Colors.white, fontSize: 12)),
                   Expanded(
                       child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -287,7 +310,7 @@ _showWidget() {
     return Container(
       child: Text(
         widget.subTitle,
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
       ),
     );
   }
@@ -342,6 +365,134 @@ _showWidget() {
       ],
     );
   }
+  _buildPlaySpeedItem(String text, int index, bool isSelected) {
+    var width = (MediaQuery.of(context).size.height - 32.0 - 16.0 * 3) / 4;
+    List speedList = [1.0, 1.25, 1.5, 2.0];
+    return WindButton(
+      onPressed: () {
+        Constant.currentSeedIndex=index;
+        widget.controller.setPlaybackSpeed(speedList[index]);
+        playerNotifier.setCurrentSpeedIndex(index);
+      },
+      child: Container(
+          width: width,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          decoration: BoxDecoration(
+              color: ColorUtils.greenGary,
+              borderRadius: BorderRadius.circular(5.0),
+              border: Border.all(
+                  color: isSelected ? ColorUtils.yellow : ColorUtils.greenGary,
+                  width: 2.0)),
+          child: Text(
+            text,
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: isSelected ? ColorUtils.mainColor : ColorUtils.gray),
+          )),
+    );
+  }
+  _buildSettingModal() {
+    List speedList = ['x1.0', 'x1.25', 'x1.5', 'x2.0'];
+    List<Widget> speedWidgets = [];
+    for (int i = 0; i < speedList.length; i++) {
+      speedWidgets.add(_buildPlaySpeedItem(
+          speedList[i], i, Constant.currentSeedIndex == i ? true : false));
+    }
+    return Container(
+      width: MediaQuery.of(context).size.height,
+      height: MediaQuery.of(context).size.height,
+      padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 16.0),
+      decoration: const BoxDecoration(
+        color: ColorUtils.backgroundColor,
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10), bottomLeft: Radius.circular(10)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            '播放速度',
+            style: const TextStyle(color: ColorUtils.gray, fontSize: 12),
+            textAlign: TextAlign.left,
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: speedWidgets,
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 20.0),
+            child: const Text('其他',
+                style: TextStyle(color: ColorUtils.gray, fontSize: 12)),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('后台播放',
+                  style: TextStyle(
+                      color: ColorUtils.mainColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
+              Row(
+                children: [
+                  Text('关',
+                      style: TextStyle(
+                          color: playerNotifier.allowBackgroundPlay
+                              ? ColorUtils.gray
+                              : ColorUtils.mainColor,
+                          fontSize: 12)),
+                  CupertinoSwitch(
+                    value: Constant.allowBackgroundPlay,
+                    activeColor: ColorUtils.green,
+                    onChanged: (value) {
+                      Constant.allowBackgroundPlay=value;
+                      playerNotifier.setAllowBackgroundPlay(value);
+                      _handler?.onBackgroundPlayClick?.call(value);
+                    },
+                  ),
+                  Text('开',
+                      style: TextStyle(
+                          color: playerNotifier.allowBackgroundPlay
+                              ? ColorUtils.mainColor
+                              : ColorUtils.gray,
+                          fontSize: 12)),
+                ],
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+  //   Stack _buildSettingModalContainer() {
+  //   return Stack(
+  //     children: [
+  //       WindButton(
+  //     onPressed: () {
+  //           _hideSettingModal();
+  //         },
+  //         child: Container(
+  //           // color: Colors.yellow,
+  //           width: MediaQuery.of(context).size.width,
+  //           height: MediaQuery.of(context).size.height,
+  //         ),
+  //       ),
+  //       AnimatedBuilder(
+  //           animation: _settingAnimController,
+  //           builder: (context, child) {
+  //             return Positioned(
+  //                 right: 0,
+  //                 child: Transform.translate(
+  //                     offset: Offset(
+  //                         double.parse(_settingModalRight.value.toString()), 0),
+  //                     child: _buildSettingModal()));
+  //           })
+  //     ],
+  //   );
+  // }
 
   _processDuration(Duration duration) {
     var _duration = duration.toString();
@@ -364,6 +515,35 @@ _showWidget() {
     }
     return _duration;
   }
+  _showSettingModal() {
+    _settingAnimController.forward();
+    playerNotifier.setShowSettingModal(true);
+  }
+
+  _hideSettingModal() {
+    _settingAnimController.reverse();
+    playerNotifier.setShowSettingModal(false);
+  }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.resumed:
+        if (!Constant.allowBackgroundPlay &&
+            !widget.controller.value.isPlaying) {
+          widget.controller.play();
+        }
+
+        break;
+      case AppLifecycleState.paused:
+        if (!Constant.allowBackgroundPlay &&
+            widget.controller.value.isPlaying) {
+          widget.controller.pause();
+        }
+        break;
+      default:
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -372,6 +552,11 @@ _showWidget() {
     return GestureDetector(
         onTap: () {
           if (playerNotifier.isLocked) return;
+          if (playerNotifier.showSettingModal) {
+            //
+            _hideSettingModal();
+            return;
+          }
           if (playerNotifier.showWidget) {
             _hideWidget();
           } else {
@@ -430,19 +615,31 @@ _showWidget() {
                 ],
               ),
               playerNotifier.showVolumeProgress
-                  ? _buildVolumeProgress(playerNotifier: playerNotifier)
+                  ? VolumeProgress(playerNotifier: playerNotifier)
                   : const SizedBox(),
               playerNotifier.showBrightnessProgress
-                  ? _buildBrightnessProgress(playerNotifier: playerNotifier)
+                  ? BrightnessProgress(playerNotifier: playerNotifier)
                   : const SizedBox(),
+                  Positioned(
+                    right:0,
+                    bottom:0,
+                    child:  LayoutBuilder(builder:((context, constraints) {
+                 final offsetAnimation =Tween<Offset>(begin:const Offset(1,0), end:const Offset(0,0))
+                  .animate(_settingAnimController);
+                 return SlideTransition(position: offsetAnimation,
+                 child: Container(
+                  height: MediaQuery.of(context).size.height,
+                 child: _buildSettingModal(),),);
+               })))
+              
             ],
           ),
         ));
   }
 }
 
-class _buildBrightnessProgress extends StatelessWidget {
-  const _buildBrightnessProgress({
+class BrightnessProgress extends StatelessWidget {
+  const BrightnessProgress({
     Key? key,
     required this.playerNotifier,
   }) : super(key: key);
@@ -475,8 +672,8 @@ class _buildBrightnessProgress extends StatelessWidget {
   }
 }
 
-class _buildVolumeProgress extends StatelessWidget {
-  const _buildVolumeProgress({
+class VolumeProgress extends StatelessWidget {
+  const VolumeProgress({
     Key? key,
     required this.playerNotifier,
   }) : super(key: key);
