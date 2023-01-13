@@ -13,7 +13,7 @@ dependencies:
   device_display_brightness: ^0.0.6
   perfect_volume_control: ^1.0.5
   provider: ^5.0.0
-  video_player: 2.1.5
+  video_player: ^2.4.6
   agora_rtc_engine: 5.2.0
   permission_handler: 9.0.1  #权限请求
 
