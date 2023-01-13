@@ -40,10 +40,10 @@ class _MyAppState extends State<MyApp> {
   }
   initVideoPlayer() async{
     Map<Permission, PermissionStatus> statuses=await [Permission.camera,Permission.audio].request();
-    String src='https://live.idbhost.com/da211fc4238d421984788089b7263566/4e589f50870b471095aa86d07a25a83e-a9a4e5e6da87e733106f697c8ab0de98-sd.mp4';
-    videoPlayerController = VideoPlayerController.network(src);
+    String src='';
+    videoPlayerController = VideoPlayerController.network(src,videoPlayerOptions:VideoPlayerOptions(allowBackgroundPlayback: true));
     await videoPlayerController.initialize();
-    windController = WindController(videoPlayerController: videoPlayerController,autoPlay: true,looping: true);
+    windController = WindController(videoPlayerController: videoPlayerController,autoPlay: true,looping: true,allowPip: true);
     // windLiveController = WindLiveController();
     AbsEventHandlerImpl? actionEvent =await windController?.createActionEvent();
     actionEvent?.setActionEventHandler(ActionEventHandler(
@@ -64,6 +64,9 @@ class _MyAppState extends State<MyApp> {
       },
       onVideoProgress: (currentPosition){
         // debugPrint('x=======onVideoProgress====$currentPosition');
+      },
+      onPlayClick: (isPlaying){
+        debugPrint('x=======onPlayClick=isPlaying=$isPlaying');
       }
     ));
     setState(() {
@@ -127,11 +130,11 @@ class _MyAppState extends State<MyApp> {
                       // setState(() {
                       //
                       // });
-                    },),
+                    },subtitle: 'hello',),
                   ),
                 )
-           :Container(color: Colors.green,width: 500,
-              height: 280,),
+           :Container(color: Colors.green,width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.width/1.77,),
             // windLiveController!=null?
             // Container(
             //   color: Colors.blue,
