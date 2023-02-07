@@ -27,6 +27,9 @@ class WindVideoPlayer extends StatefulWidget {
   /// 横竖屏切换点击
   final Function(bool landscape)? onRotateScreenClick;
 
+///播放视频直接进入横屏
+  final bool showFullScreen;
+
   /// 视频进度回调
   final Function(String time)? onVideoProgress;
 
@@ -61,6 +64,7 @@ class WindVideoPlayer extends StatefulWidget {
     this.onPipClick,
     this.onSettingClick,
     this.onVideoProgress,
+    this.showFullScreen=false,
     this.hasCollected = false,
     this.title = '',
     this.subtitle = ''})
@@ -83,8 +87,14 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(listener);
+    // widget.controller.addListener(listener);
     notifier = PlayerNotifier.init();
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      if(widget.showFullScreen){
+        widget.controller.toggleFullScreen();
+        enterFullScreen(context);
+      }
+     });
   }
 
   _initVolumeAndBrightness() async {
@@ -99,37 +109,37 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
 
   @override
   void dispose() {
-    widget.controller.removeListener(listener);
+    // widget.controller.removeListener(listener);
     super.dispose();
   }
 
   Future<void> listener() async {
     debugPrint('wind===isControllerFullScreen=$isControllerFullScreen,_isFullScreen=$_isFullScreen');
-    if (isControllerFullScreen && !_isFullScreen) {
-      _isFullScreen = isControllerFullScreen;
-      debugPrint('wind=========windVideo enterFull');
-      Navigator.of(context)
-          .push(CupertinoPageRoute(builder: (BuildContext context) {
-        return FullScreenVideo(controller: widget.controller,subtitle: widget.subtitle,);
-      })).then((value) {
-        debugPrint('wind=========windVideo back');
-        // _initVolumeAndBrightness();
-        widget.needRefresh?.call();
-      });
-    } else {
-      Navigator.of(
-        context,
-        // rootNavigator: widget.controller.useRootNavigator,
-      ).pop();
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-          overlays: [SystemUiOverlay.top]);
-      debugPrint('wind=========windVideo exit');
-      _isFullScreen = false;
-    }
+    // if (isControllerFullScreen && !_isFullScreen) {
+    //   _isFullScreen = isControllerFullScreen;
+    //   debugPrint('wind=========windVideo enterFull');
+    //   Navigator.of(context)
+    //       .push(CupertinoPageRoute(builder: (BuildContext context) {
+    //     return FullScreenVideo(controller: widget.controller,subtitle: widget.subtitle,title: widget.title,);
+    //   })).then((value) {
+    //     debugPrint('wind=========windVideo back');
+    //     // _initVolumeAndBrightness();
+    //     widget.needRefresh?.call();
+    //   });
+    // } else {
+    //   Navigator.of(
+    //     context,
+    //     // rootNavigator: widget.controller.useRootNavigator,
+    //   ).pop();
+    //   SystemChrome.setPreferredOrientations([
+    //     DeviceOrientation.portraitUp,
+    //     DeviceOrientation.portraitDown,
+    //   ]);
+    //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+    //       overlays: [SystemUiOverlay.top]);
+    //   debugPrint('wind=========windVideo exit');
+    //   _isFullScreen = false;
+    // }
   }
 
   @override
@@ -139,33 +149,24 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
         child: ChangeNotifierProvider<PlayerNotifier>.value(
           value: notifier,
           builder: (BuildContext context,Widget? child) {
-            return 
-VideoPlayerWithControls(
+            return VideoPlayerWithControls(
                 notifier: notifier,
                 volumeProgress: _volumeProgress,
                 showControls:true,
                 title:widget.title,
                 subtitle:widget.subtitle,
                 onBackClick: () {
-                  debugPrint('wind============onBackClick');
-                  // if (_isFullScreen) {
-                  //   SystemChrome.setPreferredOrientations([
-                  //     DeviceOrientation.portraitUp,
-                  //     DeviceOrientation.portraitDown,
-                  //   ]);
-                  //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-                  //       overlays: [SystemUiOverlay.top]);
-                  // } else {
-                  //   widget.onBackClick?.call();
-                  // }
+                  Navigator.pop(context);
                 },
                 onRotateScreenClick: (landscape) {
-                  if (landscape) {
-                    //横屏
-                  } else {
-                    //竖屏
-                  }
-                },
+                if (landscape) {
+                  //横屏就切换为竖屏
+                  exitFullScreen(context);
+                } else {
+                  //竖屏就切换为横屏
+                  enterFullScreen(context);
+                }
+              },
                 onCollectClick: () {
                   widget.onCollectClick?.call();
                 },
@@ -182,6 +183,30 @@ VideoPlayerWithControls(
             );
           },
         ));
+  }
+
+  void exitFullScreen(BuildContext context) {
+      Navigator.of(context).pop();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top]);
+  }
+
+  void enterFullScreen(BuildContext context) {
+       Navigator.of(context)
+        .push(CupertinoPageRoute(builder: (BuildContext context) {
+      return FullScreenVideo(
+        controller: widget.controller,
+        subtitle: widget.subtitle,
+        title: widget.title,
+      );
+    })).then((value) {
+      debugPrint('wind=========windVideo back');
+      widget.needRefresh?.call();
+    });
   }
 }
 

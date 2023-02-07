@@ -28,6 +28,16 @@ class ActionEventHandler {
   ///设置点击
   Function? onSettingClick;
 
+  ///直播刷新点击
+  Function? onRefreshClick;
+
+  ///是否运行后台播放直播触发
+  Function(bool enableLivePlayBackground)? onLivePlayBackgroundClick;
+
+  Function(int videoStreamType)? onVideoStreamTypeClick;
+
+
+
   ActionEventHandler(
       {this.onBackClick,
       this.onRotateScreenClick,
@@ -37,5 +47,8 @@ class ActionEventHandler {
       this.onCollectClick,
       this.onShareClick,
       this.onPipClick,
-      this.onSettingClick});
+      this.onSettingClick,
+      this.onRefreshClick,
+      this.onLivePlayBackgroundClick,
+      this.onVideoStreamTypeClick});
 }

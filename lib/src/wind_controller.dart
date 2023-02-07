@@ -94,6 +94,13 @@ class WindController extends ChangeNotifier{
     _isFullScreen = !_isFullScreen;
     notifyListeners();
   }
+  bool _hasCollected = false;
+  bool get hasCollected =>_hasCollected;
+  void setHasCollected(bool b){
+    _hasCollected = b;
+    notifyListeners();
+  }
+
 
   Future<void> play() async {
     await videoPlayerController.play();

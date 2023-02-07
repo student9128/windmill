@@ -19,7 +19,6 @@ class PlayerNotifier extends ChangeNotifier {
   bool _showVolumeProgress = false;
   bool get showVolumeProgress => _showVolumeProgress;
   void setShowVolumeProgress(bool b) {
-    debugPrint('wind========setShow $b');
     _showVolumeProgress =b;
     notifyListeners();
   }
@@ -33,7 +32,6 @@ class PlayerNotifier extends ChangeNotifier {
   static double _volumeProgress = 0.0;
   double get volumeProgress => _volumeProgress;
   void setVolumeProgress(double dy) async {
-    debugPrint('wind========setShow setVolumeProgress dy');
     _volumeProgress = _volumeProgress - dy / 100;
     if (_volumeProgress <= 0) {
       _volumeProgress = 0;
@@ -82,6 +80,7 @@ class PlayerNotifier extends ChangeNotifier {
   bool get showWidget =>_showWidget;
   void setShowWidget(bool b){
     _showWidget=b;
+    _showLockIcon=b;
     notifyListeners();
   }
 
@@ -90,10 +89,17 @@ class PlayerNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _showLockIcon = false;
+  bool get showLockIcon => _showLockIcon;
+  void setShowLockIcon(bool b) {
+    _showLockIcon = b;
+    notifyListeners();
+  }
+
   bool _showSettingModal = false;
-  bool get showSettingModal =>_showSettingModal;
-  void setShowSettingModal(bool b){
-    _showSettingModal=b;
+  bool get showSettingModal => _showSettingModal;
+  void setShowSettingModal(bool b) {
+    _showSettingModal = b;
     notifyListeners();
   }
   bool _allowBackgroundPlay = true;
@@ -108,6 +114,19 @@ class PlayerNotifier extends ChangeNotifier {
     _currentSpeedIndex=index;
     notifyListeners();
   }
+  int _remoteUid = -1;
+  int get remoteUid =>_remoteUid;
+  void setRemoteUid(int uid){
+    _remoteUid = uid;
+    notifyListeners();
+  }
+  String _channelName = "";
+  String get channelName =>_channelName;
+  void setChannelName(String str){
+    _channelName = str;
+    notifyListeners();
+  }
+
 
   // ignore: prefer_constructors_over_static_methods
   static PlayerNotifier init() {

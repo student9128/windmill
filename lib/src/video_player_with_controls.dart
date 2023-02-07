@@ -97,58 +97,17 @@ class _VideoPlayerWithControlsState extends State<VideoPlayerWithControls> {
               child: VideoPlayer(windController.videoPlayerController),
             ),
           ),
-          // playerNotifier.showVolumeProgress
-          //     ? Container(
-          //         alignment: Alignment.center,
-          //         child: Container(
-          //           width: 200,
-          //           height: 50,
-          //           decoration: BoxDecoration(
-          //               color: const Color(0xe0000000),
-          //               borderRadius: BorderRadius.circular(5.0)),
-          //           child: Row(
-          //             mainAxisAlignment: MainAxisAlignment.center,
-          //             children: [
-          //               buildImage('icon_volume'),
-          //               LinearPercentIndicator(
-          //                 width: 140,
-          //                 progressColor:const Color(0xffFFECC8),
-          //                 percent: playerNotifier.volumeProgress,
-          //                 barRadius: const Radius.circular(5),
-          //               )
-          //             ],
-          //           ),
-          //         ))
-          //     : Container(),
-          // playerNotifier.showBrightnessProgress
-          //     ? Container(
-          //         alignment: Alignment.center,
-          //         child: Container(
-          //           width: 200,
-          //           height: 50,
-          //           decoration: BoxDecoration(
-          //               color: const Color(0xe0000000),
-          //               borderRadius: BorderRadius.circular(5.0)),
-          //           child: Row(
-          //             mainAxisAlignment: MainAxisAlignment.center,
-          //             children: [
-          //               buildImage('icon_brightness'),
-          //               LinearPercentIndicator(
-          //                 width: 140,
-          //                 progressColor:const Color(0xffFFECC8),
-          //                 percent: playerNotifier.brightnessProgress,
-          //                 barRadius: const Radius.circular(5),
-          //               )
-          //             ],
-          //           ),
-          //         ))
-          //     : const SizedBox(),
           Container(
               child: PlayerControls(
             controller: windController.videoPlayerController,
+            title: widget.title,
             subTitle: widget.subtitle,
             onBackClick: () {
               widget.onBackClick?.call();
+            },
+            onRotateScreenClick: (landscape){
+              debugPrint('wind========1====onBackClick$landscape,${widget.onRotateScreenClick==null}');
+              widget.onRotateScreenClick?.call(landscape);
             },
           ))
         ],

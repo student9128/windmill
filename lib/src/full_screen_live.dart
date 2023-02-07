@@ -14,7 +14,15 @@ import 'package:windmill/src/wind_video_player.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as rtc_local_view;
 class FullScreenLive extends StatefulWidget {
   final WindLiveController controller;
-  const FullScreenLive({Key? key,required this.controller}) : super(key: key);
+
+  /// 标题
+  final String title;
+
+  ///字幕
+  final String subtitle;
+  const FullScreenLive(
+      {Key? key, required this.controller, this.title = '', this.subtitle = ''})
+      : super(key: key);
 
   @override
   State<FullScreenLive> createState() => _FullScreenLiveState();
@@ -86,50 +94,37 @@ class _FullScreenLiveState extends State<FullScreenLive> {
       DeviceOrientation.landscapeRight,
     ]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    return Scaffold(
-      body: GestureDetector(
-        onTap: () {},
-        onVerticalDragDown: (v) {},
-        onVerticalDragUpdate: (v) {
-          var dy = v.delta.dy;
-          setVolume(dy);
-        },
-        onVerticalDragCancel: () {},
-        // child: LivePlayerWithControls(volumeProgress: _volumeProgress,userId: -1,),
-        child: Stack(
-          children: [
-            Center(
-              child: AspectRatio(
-                aspectRatio: 1.77/1,
-                child: rtc_local_view.SurfaceView(
-                  // uid:widget.userId,
-                  channelId: 'TEST_CHANNEL',
-                ),
-              ),
-            ),
-            // Positioned(
-            //     bottom: 10,
-            //     right: 10,
-            //     child:  ElevatedButton(onPressed:(){
-            //       widget.controller.toggleFullScreen();
-            //     }, child: Text('测试全屏'))),
-            Positioned(
-                left: 10,
-                top: 50,
-                child: Row(
-                  children: [
-                    Text('声音'),
-                    LinearPercentIndicator(
-                      width: 140,
-                      progressColor: Colors.amber,
-                      // percent: widget.volumeProgress,
-                      barRadius: Radius.circular(5),
-                    )
-                  ],
-                )),
-          ],
-        ),
-      )
+       return Scaffold(
+      backgroundColor: Colors.black,
+      body: WindLiveControllerProvider(
+          controller: widget.controller,
+          child: ChangeNotifierProvider<PlayerNotifier>.value(
+            value: notifier,
+            builder: (context, child) {
+              return GestureDetector(
+                onTap: () {},
+                onVerticalDragDown: (v) {},
+                onVerticalDragUpdate: (v) {
+                  if(notifier.isLocked)return;
+                  var screenWidth = MediaQuery.of(context).size.width;
+                  var dy = v.delta.dy;
+                  var dx = v.localPosition.dx;
+                  if (dx < screenWidth / 2) {
+                    notifier.setBrightnessProgress(dy);
+                  } else {
+                    notifier.setVolumeProgress(dy);
+                  }
+                },
+                onVerticalDragCancel: () {},
+                onVerticalDragEnd: (v) {
+                  if(notifier.isLocked)return;
+                  notifier.setShowVolumeProgress(false);
+                  notifier.setShowBrightnessProgress(false);
+                },
+                child: LivePlayerWithControls(volumeProgress: _volumeProgress,subtitle:widget.subtitle,),
+              );
+            },
+          )),
     );
   }
 }

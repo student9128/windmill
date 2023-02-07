@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +14,7 @@ import 'package:windmill/src/util/widget_utils.dart';
 import 'package:windmill/src/util/wind_button.dart';
 import 'package:windmill/windmill.dart';
 
-class PlayerControls extends StatefulWidget {
-  final VideoPlayerController controller;
+class LivePlayerControls extends StatefulWidget {
 
   ///是否显示视频画面上面的组件
   final bool showControls;
@@ -54,9 +52,8 @@ class PlayerControls extends StatefulWidget {
   ///字幕
   final String subTitle;
 
-  const PlayerControls(
+  const LivePlayerControls(
       {Key? key,
-      required this.controller,
       this.showControls = false,
       this.bottomHeight = 30,
       this.onBackClick,
@@ -72,10 +69,10 @@ class PlayerControls extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<PlayerControls> createState() => _PlayerControlsState();
+  State<LivePlayerControls> createState() => _LivePlayerControlsState();
 }
 
-class _PlayerControlsState extends State<PlayerControls>
+class _LivePlayerControlsState extends State<LivePlayerControls>
     with TickerProviderStateMixin,WidgetsBindingObserver {
   late AnimationController _animationController, _settingAnimController,_lockController;
   late Animation _changeOpacity;
@@ -94,9 +91,9 @@ class _PlayerControlsState extends State<PlayerControls>
   @override
   void initState() {
     super.initState();
+    Constant.currentSeedIndex=1;
     WidgetsBinding.instance?.addObserver(this);
     playerNotifier=PlayerNotifier.init();
-    widget.controller.addListener(_updateState);
     _animationController =AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
     _lockController =AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
     _settingAnimController =
@@ -116,40 +113,13 @@ class _PlayerControlsState extends State<PlayerControls>
         Tween(begin: 1.0, end: 0.0).animate(_animationController); //修改透明度
     _changePosition =
         Tween(begin: 0.0, end: -15.0).animate(_animationController);
-     _lockOpacity = Tween(begin: 1.0, end: 0.0).animate(_lockController);
+    _lockOpacity = Tween(begin: 1.0, end: 0.0).animate(_lockController);
     _hideWidget();
   }
 
-  _updateState() {
-    if (!mounted) return;
-    _currentPos = widget.controller.value.position;
-    if (_currentPos == _oldPos && widget.controller.value.isPlaying) {
-      _equalCount++;
-      if (_equalCount > 5 && isPlaying) {
-        // showToast('暂停了');
-        // debugPrint('player======暂停了');
-        isPlaying = false;
-        // _showPlay=true;
-      }
-    } else {
-      // debugPrint('player======开始播放');
-      _oldPos = _currentPos;
-      _equalCount = 0;
-      // showToast('开始播放');
-      if (!isPlaying) {
-        isPlaying = true;
-        // _showPlay=false;
-      }
-    }
-    _handler?.onVideoProgress?.call(_currentPos == const Duration(seconds: 0)
-        ? '00:00'
-        : _processDuration(_currentPos));
-    setState(() {});
-  }
 
   @override
   void dispose() {
-    widget.controller.removeListener(_updateState);
     _mTimer?.cancel();
     _animationController.dispose();
     _settingAnimController.dispose();
@@ -173,7 +143,7 @@ _showWidget() {
   }
 
   _buildTopButtons() {
-    WindController windController = WindController.of(context);
+    WindLiveController windLiveController = WindLiveController.of(context);
     return SafeArea(
       child: AnimatedBuilder(
         animation: _animationController,
@@ -183,7 +153,7 @@ _showWidget() {
               child: Transform.translate(
                   offset: Offset(0.0, _changePosition.value),
                   child: Container(
-                    margin: EdgeInsets.only(left:windController.isFullScreen?32:10,right:windController.isFullScreen?32:10,top: 10),
+                    margin: EdgeInsets.only(left:windLiveController.isFullScreen?32:10,right:windLiveController.isFullScreen?32:10,top: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -191,40 +161,53 @@ _showWidget() {
                           children: [
                             WindButton(
                                 onPressed: () {
-                                  if(playerNotifier.isLocked)return;
+                                  if (playerNotifier.isLocked) return;
                                   bool _isFullScreen =
                                       MediaQuery.of(context).orientation ==
                                           Orientation.landscape;
-                                  debugPrint('wind========2====onBackClick$_isFullScreen');
                                   if (_isFullScreen) {
-                                    windController.exitFullScreen();
-                                    widget.onRotateScreenClick?.call(true);
+                                    windLiveController.toggleFullScreen();
+                                    _handler?.onRotateScreenClick?.call(true);
                                   } else {
                                     widget.onBackClick?.call();
                                     _handler?.onBackClick?.call();
                                   }
                                 },
-                                child: buildImage('icon_back',width: 25,height:25,padding: const EdgeInsets.all(0))),
-                            windController.isFullScreen?
+                                child: buildImage('icon_back',
+                                    width: 25,
+                                    height: 25,
+                                    padding: const EdgeInsets.all(0))),
                             Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: const Text(
+                                '直播中',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12),
+                              ),
+                            ),
+                            windLiveController.isFullScreen?
+                            Container(
+                              margin: const EdgeInsets.only(left: 5),
                                 child: Text(widget.title,
                                     style: const TextStyle(
                                         color: ColorUtils.mainColor,
                                         fontSize: 18,
-                                        // ignore: prefer_const_constructors
-                                        fontWeight: FontWeight.bold))):SizedBox(),
+                                        fontWeight: FontWeight.bold))):const SizedBox()
                           ],
                         ),
                         Row(
                           children: [
-                            windController.isFullScreen?
+                            windLiveController.isFullScreen?
                             WindButton(
                               onPressed: () {
                                 if(playerNotifier.isLocked)return;
                                 _handler?.onCollectClick?.call();
-                                windController.setHasCollected(true);
                               },
-                              child: buildImage(windController.hasCollected?'icon_star_selected':'icon_star',margin:const EdgeInsets.only(right: 10)),
+                              child: buildImage('icon_star',margin:const EdgeInsets.only(right: 10)),
                             ):const SizedBox(),
                             // Container(
                             //   color: Colors.red,
@@ -236,7 +219,7 @@ _showWidget() {
                               },
                               child: buildImage('icon_share'),
                             ),
-                            windController.isFullScreen?
+                            windLiveController.isFullScreen?
                             WindButton(
                               onPressed: () {
                                 if(playerNotifier.isLocked)return;
@@ -261,10 +244,7 @@ _showWidget() {
   }
 
   _buildBottomButtons() {
-    WindController windController = WindController.of(context);
-    var duration = _processDuration(widget.controller.value.duration);
-    var position =
-        _currentPos == null ? '00:00' : _processDuration(_currentPos);
+    WindLiveController windLiveController = WindLiveController.of(context);
     return AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
@@ -272,32 +252,14 @@ _showWidget() {
             opacity: _changeOpacity.value,
             child: Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(horizontal:windController.isFullScreen?32:16),
-              margin: EdgeInsets.only(bottom: windController.isFullScreen?20:5),
+              padding: EdgeInsets.symmetric(horizontal:windLiveController.isFullScreen?32:16),
+              margin: EdgeInsets.only(bottom: windLiveController.isFullScreen?20:5),
               height: widget.bottomHeight,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(position,
-                      style: const TextStyle(color: Colors.white, fontSize: 12)),
-                  Expanded(
-                      child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: VideoProgressBar(
-                      widget.controller,
-                      barHeight: 6,
-                      handleHeight: 6,
-                      drawShadow: false,
-                    ),
-                  )),
-                  Text(
-                    duration,
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                  Row(
-                    children: [
-                      windController.allowPip?
+                  windLiveController.allowPip?
                       WindButton(
                         onPressed: () {
                           if(playerNotifier.isLocked)return;
@@ -308,13 +270,12 @@ _showWidget() {
                       WindButton(
                           onPressed: () {
                             if(playerNotifier.isLocked)return;
-                            widget.onRotateScreenClick?.call(windController.isFullScreen);
-                            _handler?.onRotateScreenClick?.call(windController.isFullScreen);
-                            windController.toggleFullScreen(); //设置controller中isFullScreen状态
+                            _handler?.onRotateScreenClick
+                                ?.call(windLiveController.isFullScreen);
+                            windLiveController
+                                .toggleFullScreen(); //设置controller中isFullScreen状态
                           },
-                          child: buildImage(windController.isFullScreen?'icon_rotate_screen_h':'icon_rotate_screen_v',padding: const EdgeInsets.only(left: 5,top: 5,bottom: 5)))
-                    ],
-                  )
+                          child: buildImage('icon_rotate_screen_v',padding: const EdgeInsets.only(left: 5,top: 5,bottom: 5)))
                 ],
               ),
             ),
@@ -341,25 +302,16 @@ _showWidget() {
             child: WindButton(
                 onPressed: () {
                   if(playerNotifier.isLocked)return;
-                  var controller = widget.controller;
-                  _handler?.onPlayClick?.call(controller.value.isPlaying);
-                  if (controller.value.isPlaying) {
-                    controller.pause();
-                    _showWidget();
-                  } else {
-                    controller.play();
+                  _handler?.onRefreshClick?.call();
                     _hideWidget();
-                  }
                 },
-                child: widget.controller.value.isPlaying && isPlaying
-                    ? buildImage('icon_video_pause')
-                    : buildImage('icon_video_play.jpg', isPNG: false)),
+                child: buildImage('icon_refresh',width: 30,height: 30)),
           );
         },
       ),
     );
   }
- _buildLockButton() {
+  _buildLockButton() {
     playerNotifier = Provider.of<PlayerNotifier>(context);
     return AnimatedBuilder(
         animation: _lockController,
@@ -397,15 +349,16 @@ _showWidget() {
   }
   _buildPlaySpeedItem(String text, int index, bool isSelected) {
     var width = (MediaQuery.of(context).size.height - 32.0 - 16.0 * 3) / 4;
-    List speedList = [1.0, 1.25, 1.5, 2.0];
+    List<String> speedList = ['高清','流畅'];
     return WindButton(
       onPressed: () {
         Constant.currentSeedIndex=index;
-        widget.controller.setPlaybackSpeed(speedList[index]);
+        _handler?.onVideoStreamTypeClick?.call(index);
         playerNotifier.setCurrentSpeedIndex(index);
       },
       child: Container(
           width: width,
+          margin: const EdgeInsets.only(left: 16.0),
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(vertical: 5.0),
           decoration: BoxDecoration(
@@ -423,7 +376,7 @@ _showWidget() {
     );
   }
   _buildSettingModal() {
-    List speedList = ['x1.0', 'x1.25', 'x1.5', 'x2.0'];
+    List speedList = ['高清', '流畅'];
     List<Widget> speedWidgets = [];
     for (int i = 0; i < speedList.length; i++) {
       speedWidgets.add(_buildPlaySpeedItem(
@@ -442,14 +395,14 @@ _showWidget() {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            '播放速度',
+            '清晰度',
             style: const TextStyle(color: ColorUtils.gray, fontSize: 12),
             textAlign: TextAlign.left,
           ),
           Container(
             margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: speedWidgets,
             ),
           ),
@@ -497,54 +450,7 @@ _showWidget() {
       ),
     );
   }
-  //   Stack _buildSettingModalContainer() {
-  //   return Stack(
-  //     children: [
-  //       WindButton(
-  //     onPressed: () {
-  //           _hideSettingModal();
-  //         },
-  //         child: Container(
-  //           // color: Colors.yellow,
-  //           width: MediaQuery.of(context).size.width,
-  //           height: MediaQuery.of(context).size.height,
-  //         ),
-  //       ),
-  //       AnimatedBuilder(
-  //           animation: _settingAnimController,
-  //           builder: (context, child) {
-  //             return Positioned(
-  //                 right: 0,
-  //                 child: Transform.translate(
-  //                     offset: Offset(
-  //                         double.parse(_settingModalRight.value.toString()), 0),
-  //                     child: _buildSettingModal()));
-  //           })
-  //     ],
-  //   );
-  // }
 
-  _processDuration(Duration duration) {
-    var _duration = duration.toString();
-    var index = _duration.indexOf('.');
-    var colonIndex = _duration.indexOf(":");
-    if (index != -1) {
-      _duration = _duration.substring(0, index);
-    }
-    // debugPrint('duration=${duration.toString()},index=$index,_duration=$_duration');
-    if (colonIndex == 1) {
-      var first = _duration.substring(0, 1);
-      // print('first=$first,,${first=='0'}');
-      if (first == '0') {
-        _duration = _duration.substring(2, _duration.length);
-      } else {
-        _duration = '0$_duration';
-      }
-    } else {
-      _duration = '0$_duration';
-    }
-    return _duration;
-  }
   _showSettingModal() {
     _settingAnimController.forward();
     playerNotifier.setShowSettingModal(true);
@@ -559,16 +465,14 @@ _showWidget() {
     super.didChangeAppLifecycleState(state);
     switch (state) {
       case AppLifecycleState.resumed:
-        if (!Constant.allowBackgroundPlay &&
-            !widget.controller.value.isPlaying) {
-          widget.controller.play();
+        if (!Constant.allowBackgroundPlay) {
+          _handler?.onLivePlayBackgroundClick?.call(true);
         }
 
         break;
       case AppLifecycleState.paused:
-        if (!Constant.allowBackgroundPlay &&
-            widget.controller.value.isPlaying) {
-          widget.controller.pause();
+        if (!Constant.allowBackgroundPlay) {
+          _handler?.onLivePlayBackgroundClick?.call(false);
         }
         break;
       default:
@@ -577,12 +481,12 @@ _showWidget() {
 
   @override
   Widget build(BuildContext context) {
-    WindController windController = WindController.of(context);
+    WindLiveController windController = WindLiveController.of(context);
     playerNotifier = Provider.of<PlayerNotifier>(context);
     return GestureDetector(
         onTap: () {
-          if (playerNotifier.isLocked){
-             if (playerNotifier.showLockIcon) {//锁屏的时候就动态调整锁屏图标
+          if (playerNotifier.isLocked) {
+            if (playerNotifier.showLockIcon) {//锁屏的时候就动态调整锁屏图标
               _lockController.forward();
               playerNotifier.setShowLockIcon(false);
             } else {
@@ -594,7 +498,7 @@ _showWidget() {
               });
             }
             return;
-          } 
+          }
           if (playerNotifier.showSettingModal) {
             //
             _hideSettingModal();

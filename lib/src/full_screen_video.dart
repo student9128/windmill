@@ -45,7 +45,6 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
     super.initState();
     widget.controller.addListener(listener);
     notifier = PlayerNotifier.init();
-    // _initVolumeAndBrightness();
   }
   @override
   void dispose() {
@@ -54,41 +53,6 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
   }
 
   Future<void> listener() async {
-    // if (isControllerFullScreen && !_isFullScreen) {
-    //   _isFullScreen = isControllerFullScreen;
-    //   debugPrint('wind=========fullScreen enterFull');
-    // } else if (_isFullScreen) {
-    //   Navigator.of(
-    //     context,
-    //     // rootNavigator: widget.controller.useRootNavigator,
-    //   ).pop();
-    //   _isFullScreen = false;
-    //   debugPrint('wind=========fullScreen exit');
-    // }
-  }
-  _initVolumeAndBrightness() async{
-    PerfectVolumeControl.hideUI = true;
-    double volume = await PerfectVolumeControl.getVolume();
-    _volumeProgress = volume;
-    _currentVolume = volume;
-    double brightness = await DeviceDisplayBrightness.getBrightness();
-    _brightnessProgress = brightness;
-    setState(() {
-
-    });
-  }
-  setVolume(double dy) async {
-    _currentVolume = _currentVolume - dy / 100;
-    if (_currentVolume <= 0) {
-      _currentVolume = 0;
-    }
-    if (_currentVolume > 1.0) {
-      _currentVolume = 1.0;
-    }
-    setState(() {
-      _volumeProgress = _currentVolume;
-    });
-    await PerfectVolumeControl.setVolume(_currentVolume);
   }
   @override
   Widget build(BuildContext context) {
@@ -97,7 +61,6 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
       DeviceOrientation.landscapeRight,
     ]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    debugPrint('wind==================走了');
     return Scaffold(
       backgroundColor: Colors.black,
       body: WindControllerProvider(
@@ -125,7 +88,20 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
                   notifier.setShowVolumeProgress(false);
                   notifier.setShowBrightnessProgress(false);
                 },
-                child: VideoPlayerWithControls(volumeProgress: _volumeProgress,subtitle:widget.subtitle,),
+                child: VideoPlayerWithControls(
+                  volumeProgress: _volumeProgress,
+                  subtitle: widget.subtitle,
+                  title: widget.title,
+                  onRotateScreenClick: (landscape) {
+                    Navigator.pop(context);
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.portraitUp,
+                      DeviceOrientation.portraitDown,
+                    ]);
+                    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+                        overlays: [SystemUiOverlay.top]);
+                  },
+                ),
               );
             },
           )),

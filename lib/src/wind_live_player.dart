@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:device_display_brightness/device_display_brightness.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +17,20 @@ import 'package:windmill/src/wind_live_controller.dart';
 class WindLivePlayer extends StatefulWidget {
   final WindLiveController controller;
   final Function? needRefresh;
+    /// 标题
+  final String title;
+
+  ///字幕
+  final String subtitle;
   final Function(bool landscape)? onRotateScreenClick;
 
   const WindLivePlayer(
       {Key? key,
       required this.controller,
       this.needRefresh,
-      this.onRotateScreenClick})
+      this.onRotateScreenClick,
+      this.title = '',
+      this.subtitle = ''})
       : super(key: key);
 
   @override
@@ -36,14 +45,15 @@ class _WindLivePlayerState extends State<WindLivePlayer> {
   bool _isFullScreen = false;
 
   bool get isControllerFullScreen => widget.controller.isFullScreen;
-  int _uid = -1;
 
   @override
   void initState() {
     super.initState();
     widget.controller.addListener(listener);
     notifier = PlayerNotifier.init();
-    _initVolumeAndBrightness();
+    // WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    //   notifier.setChannelName(widget.channelName);
+    // });
   }
 
   _initVolumeAndBrightness() async {
@@ -63,33 +73,46 @@ class _WindLivePlayerState extends State<WindLivePlayer> {
   }
 
   Future<void> listener() async {
-    if (isControllerFullScreen && !_isFullScreen) {
-      _isFullScreen = isControllerFullScreen;
-      debugPrint('wind=========windVideo enterFull');
-      widget.onRotateScreenClick?.call(true);
-      // Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext context) {
-      //   return FullScreenLive(controller: widget.controller);
-      // })).then((value){
-      //   debugPrint('wind=========windVideo back');
-      //   _initVolumeAndBrightness();
-      //   widget.needRefresh?.call();
-      //   widget.controller.refresh();
-      // });
-    } else {
-      widget.onRotateScreenClick?.call(false);
-      Navigator.of(
-        context,
-        // rootNavigator: widget.controller.useRootNavigator,
-      ).pop();
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-          overlays: [SystemUiOverlay.top]);
-      debugPrint('wind=========windVideo exit');
-      _isFullScreen = false;
-    }
+    setState(() {
+      
+    });
+    debugPrint('wind===isControllerFullScreen=$isControllerFullScreen,_isFullScreen=$_isFullScreen');
+    // if (isControllerFullScreen && !_isFullScreen) {
+    //   _isFullScreen = isControllerFullScreen;
+    //   debugPrint('wind=========windVideo enterFull');
+    //   Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext context) {
+    //     return FullScreenLive(controller: widget.controller);
+    //   })).then((value){
+    //   widget.onRotateScreenClick?.call(false);
+    //     debugPrint('wind=========windVideo back');
+    //     // _initVolumeAndBrightness();
+    //     // widget.needRefresh?.call();
+    //     // widget.controller.refresh();
+    //   });
+    // //    SystemChrome.setPreferredOrientations([
+    // //   // DeviceOrientation.landscapeLeft,
+    // //   Platform.isIOS?
+    // //   DeviceOrientation.landscapeRight:DeviceOrientation.landscapeLeft,
+    // // ]);
+    // // setState(() {
+    // // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    // // });
+    // } else {
+    //   widget.onRotateScreenClick?.call(true);
+    //   Navigator.of(
+    //     context,
+    //   ).pop();
+    //   SystemChrome.setPreferredOrientations([
+    //     DeviceOrientation.portraitUp,
+    //     DeviceOrientation.portraitDown,
+    //   ]);
+    //   setState(() {
+    //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+    //       overlays: [SystemUiOverlay.top]);
+    //   });
+    //   debugPrint('wind=========windVideo exit');
+    //   _isFullScreen = false;
+    // }
   }
 
   setVolume(double dy) async {
@@ -112,7 +135,7 @@ class _WindLivePlayerState extends State<WindLivePlayer> {
         controller: widget.controller,
         child: ChangeNotifierProvider<PlayerNotifier>.value(
           value: notifier,
-          builder: (context, widget) {
+          builder: (context, child) {
             // if(_uid==-1)return Container(color: Colors.red,width: 100,height: 100,);
             return GestureDetector(
               onTap: () {},
@@ -123,8 +146,9 @@ class _WindLivePlayerState extends State<WindLivePlayer> {
               },
               onVerticalDragCancel: () {},
               child: LivePlayerWithControls(
+                title: widget.title,
+                subtitle: widget.subtitle,
                 volumeProgress: _volumeProgress,
-                userId: _uid,
               ),
             );
           },
