@@ -43,7 +43,6 @@ android {
 
     defaultConfig {
         applicationId "com.kevin.windmill_example"
-//        applicationId "com.sumscope.qeubee.mobile"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()

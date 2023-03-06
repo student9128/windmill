@@ -286,7 +286,7 @@ _showWidget() {
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: VideoProgressBar(
                       widget.controller,
-                      barHeight: 6,
+                      barHeight: 3,
                       handleHeight: 6,
                       drawShadow: false,
                     ),

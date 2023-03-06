@@ -114,8 +114,6 @@ class WindLiveController extends ChangeNotifier {
     // if(startPos!=null){
     //   await videoPlayerController.seekTo(startPos!);
     // }
-    // String appIdx = 'd4d4713353494ff5b93fca5ec5169f9b';
-    // String token ='007eJxTYBD88uN9+9Ewr0sNRb2smctijtRF8dy6l1viwnVg6/qVfLcVGFJMUkzMDY2NTY1NLE3S0kyTLI3TkhNNU5NNDc0s0yyTjmQ/SG4IZGRobX/AysgAgSA+D0OIa3BIvLOHo5+fqw8DAwDr/SOh';
     RtcEngineContext context = RtcEngineContext(appId);
     _engine = await RtcEngine.createWithContext(context);
     _isInit = true;

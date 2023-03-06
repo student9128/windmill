@@ -106,7 +106,6 @@ class WindController extends ChangeNotifier{
     await videoPlayerController.play();
   }
 
-  // ignore: avoid_positional_boolean_parameters
   Future<void> setLooping(bool looping) async {
     await videoPlayerController.setLooping(looping);
   }
