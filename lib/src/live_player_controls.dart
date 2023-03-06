@@ -275,7 +275,7 @@ _showWidget() {
                             windLiveController
                                 .toggleFullScreen(); //设置controller中isFullScreen状态
                           },
-                          child: buildImage('icon_rotate_screen_v',padding: const EdgeInsets.only(left: 5,top: 5,bottom: 5)))
+                          child: buildImage(windLiveController.isFullScreen?'icon_rotate_screen_h':'icon_rotate_screen_v',padding: const EdgeInsets.only(left: 5,top: 5,bottom: 5)))
                 ],
               ),
             ),

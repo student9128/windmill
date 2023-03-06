@@ -50,7 +50,7 @@ class _LivePlayerWithControlsState extends State<LivePlayerWithControls> {
     Widget buildPlayerWithControls(BuildContext context,WindLiveController windController){
       WindLiveController windLiveController = WindLiveController.of(context);
       debugPrint('liveVideo========joinChange=123---${windLiveController.remoteUid},${windLiveController.channelId}');
-      return SafeArea(child: Scaffold(
+      return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.black,
         body: Stack(
@@ -58,10 +58,6 @@ class _LivePlayerWithControlsState extends State<LivePlayerWithControls> {
             Center(
               child: AspectRatio(
                 aspectRatio: 1.77/1,
-                // child: rtc_local_view.TextureView(
-                //   // uid:widget.userId,
-                //   channelId: 'TEST_CHANNEL',
-                // ),
                 child: rtc_remote_view.TextureView(
                   uid: windLiveController.remoteUid,
                   channelId: windLiveController.channelId,
@@ -76,29 +72,9 @@ class _LivePlayerWithControlsState extends State<LivePlayerWithControls> {
                     widget.onBackClick?.call();
                   },
                 ))
-            //     Positioned(
-            //       bottom: 10,
-            //         right: 10,
-            //         child:  ElevatedButton(onPressed:(){
-            //           windLiveController.toggleFullScreen();
-            //     }, child: Text('测试全屏'))),
-            //     Positioned(
-            //       left: 10,
-            //         top: 50,
-            //         child: Row(
-            // children: [
-            //   Text('声音'),
-            //   LinearPercentIndicator(
-            //     width: 140,
-            //     progressColor: Colors.amber,
-            //     percent: widget.volumeProgress,
-            //     barRadius: Radius.circular(5),
-            //   )
-            // ],
-            // )),
           ],
         ),
-      ));
+      );
     }
     return Center(
       child: SizedBox(

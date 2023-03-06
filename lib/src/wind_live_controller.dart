@@ -163,17 +163,12 @@ class WindLiveController extends ChangeNotifier {
     }, remoteVideoStateChanged: (int uid, VideoRemoteState state,
         VideoRemoteStateReason reason, int elapsed) {
       _agoraHandler?.remoteVideoStateChanged?.call(uid, state, reason, elapsed);
-      debugPrint(
-          'liveVideo==========changed==$uid,state=$state,reason=$reason,elapsed=$elapsed}');
     }));
   }
 
   void refresh() async {
-    debugPrint('wind=========windLiveVideo refresh');
-    _engine.switchChannel(token, channelName);
-    // String token ='007eJxTYNikJN0XwhOa78GvF+E2oeO/9+Pq3xlMm5h3zv0aqrdJbbkCQ4pJiom5obGxqbGJpUlammmSpXFacqJparKpoZllmmVSS9CC5IZARoa7qywZGRkgEMTnYQhxDQ6Jd/Zw9PNz9WFgAACmkh/l';
-    // await _engine.joinChannel(token, 'TEST_CHANNEL', null, 0);
-    // _initialize();
+    await _engine.leaveChannel();
+    await _engine.joinChannel(token, channelName, null, optionalUid);
   }
 
   void setChannelId(String channelId) {
@@ -187,9 +182,9 @@ class WindLiveController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void leaveChannel() {
-    _engine.leaveChannel();
-    _engine.destroy();
+  void leaveChannel() async{
+    await _engine.leaveChannel();
+    await _engine.destroy();
   }
 
   void switchChannel() async{
