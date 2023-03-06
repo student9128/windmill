@@ -175,6 +175,8 @@ _showWidget() {
   _buildTopButtons() {
     WindController windController = WindController.of(context);
     return SafeArea(
+      left: false,
+      right: false,
       child: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
