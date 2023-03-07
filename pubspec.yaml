@@ -14,7 +14,7 @@ dependencies:
   perfect_volume_control: ^1.0.5
   provider: ^6.0.5
   video_player: ^2.4.6
-  agora_rtc_engine: 5.2.0
+  agora_rtc_engine: ^5.2.0
   permission_handler: ^10.2.0  #权限请求
 
 dev_dependencies:
