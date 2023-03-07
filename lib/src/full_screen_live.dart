@@ -3,15 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
 import 'package:provider/provider.dart';
-import 'package:windmill/src/linear_percent_indiacator.dart';
 import 'package:windmill/src/live_player_with_controls.dart';
 import 'package:windmill/src/player_notifier.dart';
-import 'package:windmill/src/video_player_with_controls.dart';
-import 'package:windmill/src/wind_controller.dart';
 import 'package:windmill/src/wind_live_controller.dart';
 import 'package:windmill/src/wind_live_player.dart';
-import 'package:windmill/src/wind_video_player.dart';
-import 'package:agora_rtc_engine/rtc_local_view.dart' as rtc_local_view;
 class FullScreenLive extends StatefulWidget {
   final WindLiveController controller;
 

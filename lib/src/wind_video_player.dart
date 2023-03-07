@@ -89,7 +89,7 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
     super.initState();
     // widget.controller.addListener(listener);
     notifier = PlayerNotifier.init();
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if(widget.showFullScreen){
         widget.controller.toggleFullScreen();
         enterFullScreen(context);
