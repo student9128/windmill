@@ -7,9 +7,6 @@ export 'src/abs_event_handler.dart';
 export 'src/action_event_handler.dart';
 export 'src/abs_event_handler_impl.dart';
 export 'src/agora_action_event_handler.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 //
 // class Windmill {
 //   static const MethodChannel _channel = MethodChannel('windmill');

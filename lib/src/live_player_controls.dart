@@ -92,7 +92,7 @@ class _LivePlayerControlsState extends State<LivePlayerControls>
   void initState() {
     super.initState();
     Constant.currentSeedIndex=1;
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     playerNotifier=PlayerNotifier.init();
     _animationController =AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
     _lockController =AnimationController(duration: const Duration(milliseconds: 300), vsync: this);

@@ -94,7 +94,7 @@ class _PlayerControlsState extends State<PlayerControls>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     playerNotifier=PlayerNotifier.init();
     widget.controller.addListener(_updateState);
     _animationController =AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
