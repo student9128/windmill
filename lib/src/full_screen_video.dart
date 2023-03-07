@@ -1,7 +1,5 @@
-import 'package:device_display_brightness/device_display_brightness.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:perfect_volume_control/perfect_volume_control.dart';
 import 'package:provider/provider.dart';
 import 'package:windmill/src/player_notifier.dart';
 import 'package:windmill/src/video_player_with_controls.dart';
@@ -32,14 +30,11 @@ class FullScreenVideo extends StatefulWidget {
 }
 
 class _FullScreenVideoState extends State<FullScreenVideo> {
-  bool _isFullScreen = false;
   late PlayerNotifier notifier;
 
   bool get isControllerFullScreen => widget.controller.isFullScreen;
 
-  double _brightnessProgress = 0.0;
-  double _volumeProgress = 0.0;
-  double _currentVolume = 0.0;
+  final double _volumeProgress = 0.0;
   @override
   void initState() {
     super.initState();
