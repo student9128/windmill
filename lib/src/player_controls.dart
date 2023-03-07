@@ -590,7 +590,13 @@ _showWidget() {
           }
         },
         onHorizontalDragDown: (v) {},
-        onHorizontalDragUpdate: (v) {},
+        onHorizontalDragUpdate: (v) {
+          if (playerNotifier.isLocked) return;
+          var currentPos = widget.controller.value.position;
+          var dx = v.delta.dx;
+          currentPos += widget.controller.value.duration * (dx / 1000);
+          widget.controller.seekTo(currentPos);
+        },
         onHorizontalDragCancel: () {},
         onHorizontalDragStart: (v) {},
         onHorizontalDragEnd: (v) {},

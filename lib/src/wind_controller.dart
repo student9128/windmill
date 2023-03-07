@@ -100,6 +100,12 @@ class WindController extends ChangeNotifier{
     _hasCollected = b;
     notifyListeners();
   }
+  bool _gestureEnable = true;
+  bool get gestureEnable => _gestureEnable;
+  void setGestureEnable(bool b) {
+    _gestureEnable = b;
+    notifyListeners();
+  }
 
 
   Future<void> play() async {
