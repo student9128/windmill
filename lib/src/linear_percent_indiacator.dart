@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class LinearPercentIndicator extends StatefulWidget {
   ///Percent value between 0.0 and 1.0
   final double percent;
@@ -122,16 +123,16 @@ class LinearPercentIndicator extends StatefulWidget {
     _backgroundColor = backgroundColor ?? Color(0xFFB8C7CB);
 
     if (percent < 0.0 || percent > 1.0) {
-      throw new Exception(
+      throw Exception(
           "Percent value must be a double between 0.0 and 1.0, but it's $percent");
     }
   }
 
   @override
-  _LinearPercentIndicatorState createState() => _LinearPercentIndicatorState();
+  LinearPercentIndicatorState createState() => LinearPercentIndicatorState();
 }
 
-class _LinearPercentIndicatorState extends State<LinearPercentIndicator>
+class LinearPercentIndicatorState extends State<LinearPercentIndicator>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   AnimationController? _animationController;
   Animation? _animation;
@@ -310,8 +311,8 @@ class _LinearPercentIndicatorState extends State<LinearPercentIndicator>
 }
 
 class _LinearPainter extends CustomPainter {
-  final Paint _paintBackground = new Paint();
-  final Paint _paintLine = new Paint();
+  final Paint _paintBackground = Paint();
+  final Paint _paintLine = Paint();
   final double progress;
   final bool isRTL;
   final Color progressColor;

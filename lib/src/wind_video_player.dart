@@ -95,13 +95,13 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
      });
   }
 
-  _initVolumeAndBrightness() async {
-    PerfectVolumeControl.hideUI = true;
-    double volume = await PerfectVolumeControl.getVolume();
-    _volumeProgress = volume;
-    double brightness = await DeviceDisplayBrightness.getBrightness();
-    setState(() {});
-  }
+  // _initVolumeAndBrightness() async {
+  //   PerfectVolumeControl.hideUI = true;
+  //   double volume = await PerfectVolumeControl.getVolume();
+  //   _volumeProgress = volume;
+  //   double brightness = await DeviceDisplayBrightness.getBrightness();
+  //   setState(() {});
+  // }
 
   @override
   void dispose() {
