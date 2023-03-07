@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoProgressBar extends StatefulWidget {
-  VideoProgressBar(
+  const VideoProgressBar(
     this.controller, {
     // ChewieProgressColors? colors,
     this.onDragEnd,
@@ -30,12 +29,12 @@ class VideoProgressBar extends StatefulWidget {
   final bool drawShadow;
 
   @override
-  _VideoProgressBarState createState() {
-    return _VideoProgressBarState();
+  VideoProgressBarState createState() {
+    return VideoProgressBarState();
   }
 }
 
-class _VideoProgressBarState extends State<VideoProgressBar> {
+class VideoProgressBarState extends State<VideoProgressBar> {
   void listener() {
     if (!mounted) return;
     setState(() {});
@@ -135,10 +134,10 @@ class _ProgressBarPainter extends CustomPainter {
   final double barHeight;
   final double handleHeight;
   final bool drawShadow;
-  var backgroundPaint =Paint()..color=Color(0xff999999);
-  var bufferedPaint =Paint()..color=Color(0xc9009E86);
-  var playedPaint =Paint()..color=Color(0xffFFB100);
-  var handlePaint =Paint()..color=Color(0xffFFB100);
+  var backgroundPaint =Paint()..color=const Color(0xff999999);
+  var bufferedPaint =Paint()..color=const Color(0xc9009E86);
+  var playedPaint =Paint()..color=const Color(0xffFFB100);
+  var handlePaint =Paint()..color=const Color(0xffFFB100);
 
   @override
   bool shouldRepaint(CustomPainter painter) {

@@ -15,10 +15,10 @@ class WindButton extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _WindButtonState createState() => _WindButtonState();
+  WindButtonState createState() => WindButtonState();
 }
 
-class _WindButtonState extends State<WindButton> with TickerProviderStateMixin {
+class WindButtonState extends State<WindButton> with TickerProviderStateMixin {
   bool _isChangeAlpha = false;
 
   AnimationController? _controller;

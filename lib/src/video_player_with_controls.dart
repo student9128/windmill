@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
-import 'package:windmill/src/linear_percent_indiacator.dart';
 import 'package:windmill/src/player_controls.dart';
 import 'package:windmill/src/player_notifier.dart';
-import 'package:windmill/src/util/widget_utils.dart';
 import 'package:windmill/src/wind_controller.dart';
 
 class VideoPlayerWithControls extends StatefulWidget {
@@ -97,19 +95,18 @@ class _VideoPlayerWithControlsState extends State<VideoPlayerWithControls> {
               child: VideoPlayer(windController.videoPlayerController),
             ),
           ),
-          Container(
-              child: PlayerControls(
+          PlayerControls(
             controller: windController.videoPlayerController,
             title: widget.title,
             subTitle: widget.subtitle,
             onBackClick: () {
-              widget.onBackClick?.call();
+          widget.onBackClick?.call();
             },
             onRotateScreenClick: (landscape){
-              debugPrint('wind========1====onBackClick$landscape,${widget.onRotateScreenClick==null}');
-              widget.onRotateScreenClick?.call(landscape);
+          debugPrint('wind========1====onBackClick$landscape,${widget.onRotateScreenClick==null}');
+          widget.onRotateScreenClick?.call(landscape);
             },
-          ))
+          )
         ],
       );
     }

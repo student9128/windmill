@@ -634,7 +634,7 @@ class AgoraActionEventHandler{
   ///
   /// Param [elapsed] Time elapsed (ms) from the local user calling joinChannel until the SDK triggers this callback.
   ///
-  @Deprecated('')
+  // @Deprecated('')
   VideoFrameWithUidCallback? firstRemoteVideoFrame;
 
   ///

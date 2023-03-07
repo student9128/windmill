@@ -1,13 +1,8 @@
-import 'package:device_display_brightness/device_display_brightness.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:perfect_volume_control/perfect_volume_control.dart';
 import 'package:provider/provider.dart';
 import 'package:windmill/src/full_screen_video.dart';
-import 'package:windmill/src/linear_percent_indiacator.dart';
 import 'package:windmill/src/player_notifier.dart';
-import 'package:windmill/src/util/widget_utils.dart';
 import 'package:windmill/src/video_player_with_controls.dart';
 import 'package:windmill/src/wind_controller.dart';
 
@@ -80,7 +75,7 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
 
   bool get isControllerFullScreen => widget.controller.isFullScreen;
 
-  double _volumeProgress = 0.0;
+  final double _volumeProgress = 0.0;
 
   @override
   void initState() {

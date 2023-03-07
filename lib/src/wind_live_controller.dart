@@ -1,12 +1,9 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:video_player/video_player.dart';
 import 'package:windmill/src/abs_event_handler_impl.dart';
-import 'package:windmill/src/action_event_handler.dart';
 import 'package:windmill/src/agora_action_event_handler.dart';
 import 'package:windmill/src/wind_live_player.dart';
-import 'package:windmill/src/wind_video_player.dart';
 
 typedef WindLiveRoutePageBuilder = Widget Function(
     BuildContext context,

@@ -120,7 +120,7 @@ class LinearPercentIndicator extends StatefulWidget {
       throw ArgumentError(
           'Cannot provide both linearGradientBackgroundColor and backgroundColor');
     }
-    _backgroundColor = backgroundColor ?? Color(0xFFB8C7CB);
+    _backgroundColor = backgroundColor ?? const Color(0xFFB8C7CB);
 
     if (percent < 0.0 || percent > 1.0) {
       throw Exception(

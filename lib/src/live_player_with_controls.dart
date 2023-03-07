@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
-import 'package:windmill/src/linear_percent_indiacator.dart';
 import 'package:windmill/src/live_player_controls.dart';
-import 'package:windmill/src/wind_controller.dart';
-import 'package:agora_rtc_engine/rtc_local_view.dart' as rtc_local_view;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as rtc_remote_view;
 import 'package:windmill/src/wind_live_controller.dart';
 class LivePlayerWithControls extends StatefulWidget {
@@ -64,14 +60,13 @@ class _LivePlayerWithControlsState extends State<LivePlayerWithControls> {
                 ),
               ),
             ),
-            Container(
-                child: LivePlayerControls(
-                  title: widget.title,
-                  subTitle: widget.subtitle,
-                  onBackClick: () {
-                    widget.onBackClick?.call();
-                  },
-                ))
+            LivePlayerControls(
+              title: widget.title,
+              subTitle: widget.subtitle,
+              onBackClick: () {
+                widget.onBackClick?.call();
+              },
+            )
           ],
         ),
       );

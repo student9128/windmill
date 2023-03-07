@@ -1,12 +1,9 @@
-import 'dart:io';
 
 import 'package:device_display_brightness/device_display_brightness.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
 import 'package:provider/provider.dart';
-import 'package:windmill/src/full_screen_live.dart';
 import 'package:windmill/src/live_player_with_controls.dart';
 import 'package:windmill/src/player_notifier.dart';
 import 'package:windmill/src/wind_live_controller.dart';
@@ -39,10 +36,9 @@ class WindLivePlayer extends StatefulWidget {
 
 class _WindLivePlayerState extends State<WindLivePlayer> {
   late PlayerNotifier notifier;
-  double _brightnessProgress = 0.0;
   double _volumeProgress = 0.0;
   double _currentVolume = 0.0;
-  bool _isFullScreen = false;
+  final bool _isFullScreen = false;
 
   bool get isControllerFullScreen => widget.controller.isFullScreen;
 
@@ -56,15 +52,15 @@ class _WindLivePlayerState extends State<WindLivePlayer> {
     // });
   }
 
-  _initVolumeAndBrightness() async {
-    PerfectVolumeControl.hideUI = true;
-    double volume = await PerfectVolumeControl.getVolume();
-    _volumeProgress = volume;
-    _currentVolume = volume;
-    double brightness = await DeviceDisplayBrightness.getBrightness();
-    _brightnessProgress = brightness;
-    setState(() {});
-  }
+  // _initVolumeAndBrightness() async {
+  //   PerfectVolumeControl.hideUI = true;
+  //   double volume = await PerfectVolumeControl.getVolume();
+  //   _volumeProgress = volume;
+  //   _currentVolume = volume;
+  //   double brightness = await DeviceDisplayBrightness.getBrightness();
+  //   _brightnessProgress = brightness;
+  //   setState(() {});
+  // }
 
   @override
   void dispose() {
@@ -161,7 +157,7 @@ class WindLiveControllerProvider extends InheritedWidget {
 
   const WindLiveControllerProvider(
       {Key? key, required this.controller, required Widget child})
-      : super(child: child);
+      : super(key: key,child: child);
 
   @override
   bool updateShouldNotify(covariant WindLiveControllerProvider oldWidget) {

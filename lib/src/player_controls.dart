@@ -1,15 +1,13 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:windmill/src/constant.dart';
-import 'package:windmill/src/linear_percent_indiacator.dart';
+import 'package:windmill/src/linear_percent_indicator.dart';
 import 'package:windmill/src/player_notifier.dart';
 import 'package:windmill/src/progress_bar.dart';
-import 'package:windmill/src/util/asset_utils.dart';
 import 'package:windmill/src/util/color_utils.dart';
 import 'package:windmill/src/util/widget_utils.dart';
 import 'package:windmill/src/util/wind_button.dart';
@@ -80,7 +78,6 @@ class _PlayerControlsState extends State<PlayerControls>
   late AnimationController _animationController, _settingAnimController,_lockController;
   late Animation _changeOpacity;
   late Animation _changePosition;
-  late Animation _settingModalRight;
   late Animation _lockOpacity;
   Duration _currentPos = const Duration(seconds: 0);
   Duration? _oldPos;
@@ -89,7 +86,6 @@ class _PlayerControlsState extends State<PlayerControls>
   final _handler = AbsEventHandlerImpl.instance.mHandler;
   late PlayerNotifier playerNotifier;
   Timer? _mTimer;
-  int _currentSpeedIndex=0;
 
   @override
   void initState() {
@@ -101,17 +97,6 @@ class _PlayerControlsState extends State<PlayerControls>
     _lockController =AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
     _settingAnimController =
         AnimationController(duration: const Duration(milliseconds:300), vsync: this);
-     _settingModalRight =
-        Tween(begin: 300.0, end: 0.0).animate(_settingAnimController)
-          ..addStatusListener((status) {
-            if (status == AnimationStatus.dismissed) {
-              playerNotifier.setShowSettingModal(false);
-            }
-          })
-          ..addListener(() {
-            // debugPrint('_settingModalRight.value=${_settingModalRight.value}');
-            // setState(() {});
-          });
     _changeOpacity =
         Tween(begin: 1.0, end: 0.0).animate(_animationController); //修改透明度
     _changePosition =
@@ -194,11 +179,11 @@ _showWidget() {
                             WindButton(
                                 onPressed: () {
                                   if(playerNotifier.isLocked)return;
-                                  bool _isFullScreen =
+                                  bool isFullScreen =
                                       MediaQuery.of(context).orientation ==
                                           Orientation.landscape;
-                                  debugPrint('wind========2====onBackClick$_isFullScreen');
-                                  if (_isFullScreen) {
+                                  debugPrint('wind========2====onBackClick$isFullScreen');
+                                  if (isFullScreen) {
                                     windController.exitFullScreen();
                                     widget.onRotateScreenClick?.call(true);
                                   } else {
@@ -208,13 +193,12 @@ _showWidget() {
                                 },
                                 child: buildImage('icon_back',width: 25,height:25,padding: const EdgeInsets.all(0))),
                             windController.isFullScreen?
-                            Container(
-                                child: Text(widget.title,
-                                    style: const TextStyle(
-                                        color: ColorUtils.mainColor,
-                                        fontSize: 18,
-                                        // ignore: prefer_const_constructors
-                                        fontWeight: FontWeight.bold))):SizedBox(),
+                            Text(widget.title,
+                                style: const TextStyle(
+                                    color: ColorUtils.mainColor,
+                                    fontSize: 18,
+                                    // ignore: prefer_const_constructors
+                                    fontWeight: FontWeight.bold)):SizedBox(),
                           ],
                         ),
                         Row(
@@ -266,7 +250,7 @@ _showWidget() {
     WindController windController = WindController.of(context);
     var duration = _processDuration(widget.controller.value.duration);
     var position =
-        _currentPos == null ? '00:00' : _processDuration(_currentPos);
+        _currentPos= _processDuration(_currentPos);
     return AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
@@ -325,11 +309,9 @@ _showWidget() {
   }
 
   _buildSubtitles() {
-    return Container(
-      child: Text(
-        widget.subTitle,
-        style: const TextStyle(color: Colors.white),
-      ),
+    return Text(
+      widget.subTitle,
+      style: const TextStyle(color: Colors.white),
     );
   }
 
@@ -445,7 +427,7 @@ _showWidget() {
         children: [
           const Text(
             '播放速度',
-            style: const TextStyle(color: ColorUtils.gray, fontSize: 12),
+            style: TextStyle(color: ColorUtils.gray, fontSize: 12),
             textAlign: TextAlign.left,
           ),
           Container(
@@ -527,25 +509,25 @@ _showWidget() {
   // }
 
   _processDuration(Duration duration) {
-    var _duration = duration.toString();
-    var index = _duration.indexOf('.');
-    var colonIndex = _duration.indexOf(":");
+    var durationTemp = duration.toString();
+    var index = durationTemp.indexOf('.');
+    var colonIndex = durationTemp.indexOf(":");
     if (index != -1) {
-      _duration = _duration.substring(0, index);
+      durationTemp = durationTemp.substring(0, index);
     }
     // debugPrint('duration=${duration.toString()},index=$index,_duration=$_duration');
     if (colonIndex == 1) {
-      var first = _duration.substring(0, 1);
+      var first = durationTemp.substring(0, 1);
       // print('first=$first,,${first=='0'}');
       if (first == '0') {
-        _duration = _duration.substring(2, _duration.length);
+        durationTemp = durationTemp.substring(2, durationTemp.length);
       } else {
-        _duration = '0$_duration';
+        durationTemp = '0$durationTemp';
       }
     } else {
-      _duration = '0$_duration';
+      durationTemp = '0$durationTemp';
     }
-    return _duration;
+    return durationTemp;
   }
   _showSettingModal() {
     _settingAnimController.forward();
@@ -644,11 +626,8 @@ _showWidget() {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildTopButtons(),
-                  Container(
-                    // color: Colors.yellowAccent,
-                    child: Column(
-                      children: [_buildSubtitles(), _buildBottomButtons()],
-                    ),
+                  Column(
+                    children: [_buildSubtitles(), _buildBottomButtons()],
                   ),
                 ],
               ),
@@ -674,7 +653,7 @@ _showWidget() {
                  final offsetAnimation =Tween<Offset>(begin:const Offset(1,0), end:const Offset(0,0))
                   .animate(_settingAnimController);
                  return SlideTransition(position: offsetAnimation,
-                 child: Container(
+                 child: SizedBox(
                   height: MediaQuery.of(context).size.height,
                  child: _buildSettingModal(),),);
                })))

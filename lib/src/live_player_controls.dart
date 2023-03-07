@@ -3,12 +3,9 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
 import 'package:windmill/src/constant.dart';
-import 'package:windmill/src/linear_percent_indiacator.dart';
+import 'package:windmill/src/linear_percent_indicator.dart';
 import 'package:windmill/src/player_notifier.dart';
-import 'package:windmill/src/progress_bar.dart';
-import 'package:windmill/src/util/asset_utils.dart';
 import 'package:windmill/src/util/color_utils.dart';
 import 'package:windmill/src/util/widget_utils.dart';
 import 'package:windmill/src/util/wind_button.dart';
@@ -77,16 +74,11 @@ class _LivePlayerControlsState extends State<LivePlayerControls>
   late AnimationController _animationController, _settingAnimController,_lockController;
   late Animation _changeOpacity;
   late Animation _changePosition;
-  late Animation _settingModalRight;
   late Animation _lockOpacity;
-  Duration _currentPos = const Duration(seconds: 0);
-  Duration? _oldPos;
-  int _equalCount = 0;
   bool isPlaying = true;
   final _handler = AbsEventHandlerImpl.instance.mHandler;
   late PlayerNotifier playerNotifier;
   Timer? _mTimer;
-  int _currentSpeedIndex=0;
 
   @override
   void initState() {
@@ -98,17 +90,6 @@ class _LivePlayerControlsState extends State<LivePlayerControls>
     _lockController =AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
     _settingAnimController =
         AnimationController(duration: const Duration(milliseconds:300), vsync: this);
-     _settingModalRight =
-        Tween(begin: 300.0, end: 0.0).animate(_settingAnimController)
-          ..addStatusListener((status) {
-            if (status == AnimationStatus.dismissed) {
-              playerNotifier.setShowSettingModal(false);
-            }
-          })
-          ..addListener(() {
-            // debugPrint('_settingModalRight.value=${_settingModalRight.value}');
-            // setState(() {});
-          });
     _changeOpacity =
         Tween(begin: 1.0, end: 0.0).animate(_animationController); //修改透明度
     _changePosition =
@@ -164,10 +145,10 @@ _showWidget() {
                             WindButton(
                                 onPressed: () {
                                   if (playerNotifier.isLocked) return;
-                                  bool _isFullScreen =
+                                  bool isFullScreen =
                                       MediaQuery.of(context).orientation ==
                                           Orientation.landscape;
-                                  if (_isFullScreen) {
+                                  if (isFullScreen) {
                                     windLiveController.toggleFullScreen();
                                     _handler?.onRotateScreenClick?.call(true);
                                   } else {
@@ -286,11 +267,9 @@ _showWidget() {
   }
 
   _buildSubtitles() {
-    return Container(
-      child: Text(
-        widget.subTitle,
-        style: const TextStyle(color: Colors.white),
-      ),
+    return Text(
+      widget.subTitle,
+      style: const TextStyle(color: Colors.white),
     );
   }
 
@@ -351,7 +330,6 @@ _showWidget() {
   }
   _buildPlaySpeedItem(String text, int index, bool isSelected) {
     var width = (MediaQuery.of(context).size.height - 32.0 - 16.0 * 3) / 4;
-    List<String> speedList = ['高清','流畅'];
     return WindButton(
       onPressed: () {
         Constant.currentSeedIndex=index;
@@ -398,7 +376,7 @@ _showWidget() {
         children: [
           const Text(
             '清晰度',
-            style: const TextStyle(color: ColorUtils.gray, fontSize: 12),
+            style: TextStyle(color: ColorUtils.gray, fontSize: 12),
             textAlign: TextAlign.left,
           ),
           Container(
@@ -548,11 +526,8 @@ _showWidget() {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildTopButtons(),
-                  Container(
-                    // color: Colors.yellowAccent,
-                    child: Column(
-                      children: [_buildSubtitles(), _buildBottomButtons()],
-                    ),
+                  Column(
+                    children: [_buildSubtitles(), _buildBottomButtons()],
                   ),
                 ],
               ),
@@ -578,7 +553,7 @@ _showWidget() {
                  final offsetAnimation =Tween<Offset>(begin:const Offset(1,0), end:const Offset(0,0))
                   .animate(_settingAnimController);
                  return SlideTransition(position: offsetAnimation,
-                 child: Container(
+                 child: SizedBox(
                   height: MediaQuery.of(context).size.height,
                  child: _buildSettingModal(),),);
                })))
