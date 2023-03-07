@@ -1,5 +1,4 @@
 
-import 'package:device_display_brightness/device_display_brightness.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
