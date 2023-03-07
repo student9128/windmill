@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:windmill/windmill.dart';
 import 'package:video_player/video_player.dart';
-import 'package:permission_handler/permission_handler.dart';
 void main() {
-  runApp(MaterialContainer());
+  runApp(const MaterialContainer());
 }
 class MaterialContainer extends StatelessWidget{
   const MaterialContainer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-   return MaterialApp(
+   return const MaterialApp(
      home: MyApp(),
    );
   }
@@ -26,7 +25,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  // String _platformVersion = 'Unknown';
   WindController? windController;
   WindLiveController? windLiveController;
   late VideoPlayerController videoPlayerController;
@@ -39,7 +38,7 @@ class _MyAppState extends State<MyApp> {
 
   }
   initVideoPlayer() async{
-    Map<Permission, PermissionStatus> statuses=await [Permission.camera,Permission.audio].request();
+    // Map<Permission, PermissionStatus> statuses=await [Permission.camera,Permission.audio].request();
     String src='';
     videoPlayerController = VideoPlayerController.network(src,videoPlayerOptions:VideoPlayerOptions(allowBackgroundPlayback: true));
     await videoPlayerController.initialize();
@@ -109,13 +108,13 @@ class _MyAppState extends State<MyApp> {
               children: [
                 ElevatedButton(onPressed: (){
                   videoPlayerController.play();
-                }, child: Text('播放')),
+                }, child: const Text('播放')),
                 ElevatedButton(onPressed: (){
                   videoPlayerController.pause();
-                }, child: Text('暂停')),
+                }, child: const Text('暂停')),
                 ElevatedButton(onPressed: (){
                   windController?.toggleFullScreen();
-                }, child: Text('全屏'))
+                }, child: const Text('全屏'))
               ],
             )
            ,
