@@ -249,8 +249,7 @@ _showWidget() {
   _buildBottomButtons() {
     WindController windController = WindController.of(context);
     var duration = _processDuration(widget.controller.value.duration);
-    var position =
-        _currentPos= _processDuration(_currentPos);
+    var position = _processDuration(_currentPos);
     return AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
