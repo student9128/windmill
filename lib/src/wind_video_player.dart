@@ -75,14 +75,12 @@ class WindVideoPlayer extends StatefulWidget {
 }
 
 class _WindVideoPlayerState extends State<WindVideoPlayer> {
-  bool _isFullScreen = false;
+  final bool _isFullScreen = false;
   late PlayerNotifier notifier;
 
   bool get isControllerFullScreen => widget.controller.isFullScreen;
 
-  double _brightnessProgress = 0.0;
   double _volumeProgress = 0.0;
-  double _currentVolume = 0.0;
 
   @override
   void initState() {
@@ -101,9 +99,7 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
     PerfectVolumeControl.hideUI = true;
     double volume = await PerfectVolumeControl.getVolume();
     _volumeProgress = volume;
-    _currentVolume = volume;
     double brightness = await DeviceDisplayBrightness.getBrightness();
-    _brightnessProgress = brightness;
     setState(() {});
   }
 

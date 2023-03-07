@@ -1,4 +1,3 @@
-import 'package:device_display_brightness/device_display_brightness.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
@@ -24,12 +23,10 @@ class FullScreenLive extends StatefulWidget {
 }
 
 class _FullScreenLiveState extends State<FullScreenLive> {
-  bool _isFullScreen = false;
   late PlayerNotifier notifier;
 
   bool get isControllerFullScreen => widget.controller.isFullScreen;
 
-  double _brightnessProgress = 0.0;
   double _volumeProgress = 0.0;
   double _currentVolume = 0.0;
   @override
@@ -37,7 +34,7 @@ class _FullScreenLiveState extends State<FullScreenLive> {
     super.initState();
     widget.controller.addListener(listener);
     notifier = PlayerNotifier.init();
-    _initVolumeAndBrightness();
+    // _initVolumeAndBrightness();
   }
   @override
   void dispose() {
@@ -58,17 +55,16 @@ class _FullScreenLiveState extends State<FullScreenLive> {
     //   debugPrint('wind=========fullScreen exit');
     // }
   }
-  _initVolumeAndBrightness() async{
-    PerfectVolumeControl.hideUI = true;
-    double volume = await PerfectVolumeControl.getVolume();
-    _volumeProgress = volume;
-    _currentVolume = volume;
-    double brightness = await DeviceDisplayBrightness.getBrightness();
-    _brightnessProgress = brightness;
-    setState(() {
+  // _initVolumeAndBrightness() async{
+  //   PerfectVolumeControl.hideUI = true;
+  //   double volume = await PerfectVolumeControl.getVolume();
+  //   _volumeProgress = volume;
+  //   _currentVolume = volume;
+  //   double brightness = await DeviceDisplayBrightness.getBrightness();
+  //   setState(() {
 
-    });
-  }
+  //   });
+  // }
   setVolume(double dy) async {
     _currentVolume = _currentVolume - dy / 100;
     if (_currentVolume <= 0) {
