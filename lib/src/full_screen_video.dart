@@ -94,7 +94,7 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
                       DeviceOrientation.portraitDown,
                     ]);
                     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-                        overlays: [SystemUiOverlay.top]);
+                        overlays: [SystemUiOverlay.top,SystemUiOverlay.bottom]);
                   },
                 ),
               );

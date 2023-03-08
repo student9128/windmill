@@ -183,7 +183,7 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
       DeviceOrientation.portraitDown,
     ]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top]);
+        overlays: [SystemUiOverlay.top,SystemUiOverlay.bottom]);
   }
 
   void enterFullScreen(BuildContext context) {
