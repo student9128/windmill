@@ -190,7 +190,7 @@ _showWidget() {
                                 if(playerNotifier.isLocked)return;
                                 _handler?.onCollectClick?.call();
                               },
-                              child: buildImage('icon_star',margin:const EdgeInsets.only(right: 10)),
+                              child: buildImage(windLiveController.hasCollected?'icon_star_selected':'icon_star',margin:const EdgeInsets.only(right: 10)),
                             ):const SizedBox(),
                             // Container(
                             //   color: Colors.red,
@@ -497,7 +497,7 @@ _showWidget() {
         onHorizontalDragEnd: (v) {},
         onVerticalDragDown: (v) {},
         onVerticalDragUpdate: (v) {
-          if(playerNotifier.isLocked)return;
+          if(playerNotifier.isLocked||!windController.enableGesture)return;
           var screenWidth = MediaQuery.of(context).size.width;
           var dy = v.delta.dy;
           var dx = v.localPosition.dx;
@@ -510,7 +510,7 @@ _showWidget() {
         onVerticalDragCancel: () {},
         onVerticalDragStart: (v) {},
         onVerticalDragEnd: (v) {
-          if(playerNotifier.isLocked)return;
+          if(playerNotifier.isLocked||!windController.enableGesture)return;
           debugPrint('wind============onVerticalDragEnd');
           playerNotifier.setShowVolumeProgress(false);
           playerNotifier.setShowBrightnessProgress(false);

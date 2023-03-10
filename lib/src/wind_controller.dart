@@ -94,16 +94,28 @@ class WindController extends ChangeNotifier{
     _isFullScreen = !_isFullScreen;
     notifyListeners();
   }
+
   bool _hasCollected = false;
-  bool get hasCollected =>_hasCollected;
-  void setHasCollected(bool b){
+  bool get hasCollected => _hasCollected;
+  void setHasCollected(bool b) {
+    if (_hasCollected == b) return;
     _hasCollected = b;
     notifyListeners();
   }
-  bool _gestureEnable = true;
-  bool get gestureEnable => _gestureEnable;
-  void setGestureEnable(bool b) {
-    _gestureEnable = b;
+
+  bool _enableGesture = true;
+  bool get enableGesture => _enableGesture;
+  void setEnableGesture(bool b) {
+    if (_enableGesture == b) return;
+    _enableGesture = b;
+    notifyListeners();
+  }
+
+  bool _enablePlayBackground = true;
+  bool get enablePlayBackground => _enablePlayBackground;
+  void setEnablePlayBackground(bool b) {
+    if (_enablePlayBackground == b) return;
+    _enablePlayBackground = b;
     notifyListeners();
   }
 

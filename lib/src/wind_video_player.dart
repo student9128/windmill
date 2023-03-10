@@ -80,7 +80,6 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
   @override
   void initState() {
     super.initState();
-    // widget.controller.addListener(listener);
     notifier = PlayerNotifier.init();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if(widget.showFullScreen){
@@ -90,47 +89,9 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
      });
   }
 
-  // _initVolumeAndBrightness() async {
-  //   PerfectVolumeControl.hideUI = true;
-  //   double volume = await PerfectVolumeControl.getVolume();
-  //   _volumeProgress = volume;
-  //   double brightness = await DeviceDisplayBrightness.getBrightness();
-  //   setState(() {});
-  // }
-
   @override
   void dispose() {
-    // widget.controller.removeListener(listener);
     super.dispose();
-  }
-
-  Future<void> listener() async {
-    debugPrint('wind===isControllerFullScreen=$isControllerFullScreen,_isFullScreen=$_isFullScreen');
-    // if (isControllerFullScreen && !_isFullScreen) {
-    //   _isFullScreen = isControllerFullScreen;
-    //   debugPrint('wind=========windVideo enterFull');
-    //   Navigator.of(context)
-    //       .push(CupertinoPageRoute(builder: (BuildContext context) {
-    //     return FullScreenVideo(controller: widget.controller,subtitle: widget.subtitle,title: widget.title,);
-    //   })).then((value) {
-    //     debugPrint('wind=========windVideo back');
-    //     // _initVolumeAndBrightness();
-    //     widget.needRefresh?.call();
-    //   });
-    // } else {
-    //   Navigator.of(
-    //     context,
-    //     // rootNavigator: widget.controller.useRootNavigator,
-    //   ).pop();
-    //   SystemChrome.setPreferredOrientations([
-    //     DeviceOrientation.portraitUp,
-    //     DeviceOrientation.portraitDown,
-    //   ]);
-    //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-    //       overlays: [SystemUiOverlay.top]);
-    //   debugPrint('wind=========windVideo exit');
-    //   _isFullScreen = false;
-    // }
   }
 
   @override

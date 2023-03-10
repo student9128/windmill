@@ -192,6 +192,10 @@ class WindLiveController extends ChangeNotifier {
     _engine.setRemoteVideoStreamType(_remoteUid,index==0?VideoStreamType.High:VideoStreamType.Low);
   }
 
+  void muteAllRemoteAudioStreams(bool b){
+    _engine.muteAllRemoteAudioStreams(b);
+  }
+
   void enterFullScreen() {
     _isFullScreen = true;
     notifyListeners();
@@ -204,6 +208,29 @@ class WindLiveController extends ChangeNotifier {
 
   void toggleFullScreen() {
     _isFullScreen = !_isFullScreen;
+    notifyListeners();
+  }
+  bool _hasCollected = false;
+  bool get hasCollected => _hasCollected;
+  void setHasCollected(bool b) {
+    if (_hasCollected == b) return;
+    _hasCollected = b;
+    notifyListeners();
+  }
+
+  bool _enableGesture = true;
+  bool get enableGesture => _enableGesture;
+  void setEnableGesture(bool b) {
+    if (_enableGesture == b) return;
+    _enableGesture = b;
+    notifyListeners();
+  }
+
+  bool _enablePlayBackground = true;
+  bool get enablePlayBackground => _enablePlayBackground;
+  void setEnablePlayBackground(bool b) {
+    if (_enablePlayBackground == b) return;
+    _enablePlayBackground = b;
     notifyListeners();
   }
 

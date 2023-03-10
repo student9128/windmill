@@ -67,7 +67,7 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
                 onTap: () {},
                 onVerticalDragDown: (v) {},
                 onVerticalDragUpdate: (v) {
-                  if(notifier.isLocked)return;
+                  if(notifier.isLocked||!widget.controller.enableGesture)return;
                   var screenWidth = MediaQuery.of(context).size.width;
                   var dy = v.delta.dy;
                   var dx = v.localPosition.dx;
@@ -79,9 +79,19 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
                 },
                 onVerticalDragCancel: () {},
                 onVerticalDragEnd: (v) {
-                  if(notifier.isLocked)return;
+                  if(notifier.isLocked||!widget.controller.enableGesture)return;
                   notifier.setShowVolumeProgress(false);
                   notifier.setShowBrightnessProgress(false);
+                },
+                  onHorizontalDragUpdate: (v) {
+                  if (notifier.isLocked||!widget.controller.enableGesture) return;
+                  var currentPos =
+                      widget.controller.videoPlayerController.value.position;
+                  var dx = v.delta.dx;
+                  currentPos +=
+                      widget.controller.videoPlayerController.value.duration *
+                          (dx / 1000);
+                  widget.controller.seekTo(currentPos);
                 },
                 child: VideoPlayerWithControls(
                   volumeProgress: _volumeProgress,
