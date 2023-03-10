@@ -70,7 +70,6 @@ class WindVideoPlayer extends StatefulWidget {
 }
 
 class _WindVideoPlayerState extends State<WindVideoPlayer> {
-  final bool _isFullScreen = false;
   late PlayerNotifier notifier;
 
   bool get isControllerFullScreen => widget.controller.isFullScreen;
