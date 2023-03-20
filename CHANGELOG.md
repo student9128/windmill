@@ -1,3 +1,5 @@
+## 0.0.5
+fix some bugs,optimize logic & code.
 ## 0.0.4
 add some methods
 ## 0.0.3
