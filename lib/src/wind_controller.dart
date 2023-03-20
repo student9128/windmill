@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 import 'package:windmill/src/abs_event_handler_impl.dart';
+import 'package:windmill/src/constant.dart';
 import 'package:windmill/src/wind_video_player.dart';
 typedef WindRoutePageBuilder = Widget Function(
     BuildContext context,
@@ -115,6 +116,7 @@ class WindController extends ChangeNotifier{
   bool get enablePlayBackground => _enablePlayBackground;
   void setEnablePlayBackground(bool b) {
     if (_enablePlayBackground == b) return;
+    Constant.allowBackgroundPlay=b;
     _enablePlayBackground = b;
     notifyListeners();
   }

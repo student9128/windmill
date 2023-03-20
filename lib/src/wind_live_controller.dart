@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:windmill/src/abs_event_handler_impl.dart';
 import 'package:windmill/src/agora_action_event_handler.dart';
+import 'package:windmill/src/constant.dart';
 import 'package:windmill/src/wind_live_player.dart';
 
 typedef WindLiveRoutePageBuilder = Widget Function(
@@ -230,6 +231,7 @@ class WindLiveController extends ChangeNotifier {
   bool get enablePlayBackground => _enablePlayBackground;
   void setEnablePlayBackground(bool b) {
     if (_enablePlayBackground == b) return;
+    Constant.allowBackgroundPlay=b;
     _enablePlayBackground = b;
     notifyListeners();
   }

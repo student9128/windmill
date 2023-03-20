@@ -467,6 +467,7 @@ _showWidget() {
                     activeColor: ColorUtils.green,
                     onChanged: (value) {
                       Constant.allowBackgroundPlay=value;
+                      WindController.of(context).setEnablePlayBackground(value);
                       playerNotifier.setAllowBackgroundPlay(value);
                       _handler?.onBackgroundPlayClick?.call(value);
                     },
@@ -547,6 +548,7 @@ _showWidget() {
     super.didChangeAppLifecycleState(state);
     switch (state) {
       case AppLifecycleState.resumed:
+        _handler?.onResumed;
         if (!Constant.allowBackgroundPlay &&
             !widget.controller.value.isPlaying) {
           widget.controller.play();
@@ -554,10 +556,18 @@ _showWidget() {
 
         break;
       case AppLifecycleState.paused:
+        _handler?.onPaused;
         if (!Constant.allowBackgroundPlay &&
             widget.controller.value.isPlaying) {
           widget.controller.pause();
         }
+
+        break;
+      case AppLifecycleState.inactive:
+        _handler?.onInactive;
+        break;
+      case AppLifecycleState.detached:
+        _handler?.onDetached;
         break;
       default:
     }

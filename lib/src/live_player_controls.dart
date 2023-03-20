@@ -412,6 +412,7 @@ _showWidget() {
                     activeColor: ColorUtils.green,
                     onChanged: (value) {
                       Constant.allowBackgroundPlay=value;
+                      WindLiveController.of(context).setEnablePlayBackground(value);
                       playerNotifier.setAllowBackgroundPlay(value);
                       _handler?.onBackgroundPlayClick?.call(value);
                     },
@@ -443,17 +444,26 @@ _showWidget() {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
+     WindLiveController windLiveController= WindLiveController.of(context);
     switch (state) {
       case AppLifecycleState.resumed:
+        _handler?.onResumed;
         if (!Constant.allowBackgroundPlay) {
-          _handler?.onLivePlayBackgroundClick?.call(true);
+          windLiveController.muteAllRemoteAudioStreams(false);
         }
 
         break;
       case AppLifecycleState.paused:
+        _handler?.onPaused;
         if (!Constant.allowBackgroundPlay) {
-          _handler?.onLivePlayBackgroundClick?.call(false);
+          windLiveController.muteAllRemoteAudioStreams(true);
         }
+        break;
+      case AppLifecycleState.inactive:
+        _handler?.onInactive;
+        break;
+      case AppLifecycleState.detached:
+        _handler?.onDetached;
         break;
       default:
     }

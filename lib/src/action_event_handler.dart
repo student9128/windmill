@@ -31,8 +31,10 @@ class ActionEventHandler {
   ///直播刷新点击
   Function? onRefreshClick;
 
-  ///是否运行后台播放直播触发
-  Function(bool enableLivePlayBackground)? onLivePlayBackgroundClick;
+  Function? onResumed;
+  Function? onPaused;
+  Function? onInactive;
+  Function? onDetached;
 
   Function(int videoStreamType)? onVideoStreamTypeClick;
 
@@ -49,6 +51,9 @@ class ActionEventHandler {
       this.onPipClick,
       this.onSettingClick,
       this.onRefreshClick,
-      this.onLivePlayBackgroundClick,
-      this.onVideoStreamTypeClick});
+      this.onVideoStreamTypeClick,
+      this.onResumed,
+      this.onPaused,
+      this.onInactive,
+      this.onDetached});
 }
