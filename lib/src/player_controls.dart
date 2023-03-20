@@ -268,7 +268,7 @@ _showWidget() {
                       style: const TextStyle(color: Colors.white, fontSize: 12)),
                   Expanded(
                       child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: VideoProgressBar(
                       widget.controller,
                       barHeight: 3,
@@ -286,6 +286,11 @@ _showWidget() {
                       WindButton(
                         onPressed: () {
                           if(playerNotifier.isLocked)return;
+                           bool isFullScreen =MediaQuery.of(context).orientation ==Orientation.landscape;
+                          if (isFullScreen) {
+                            windController.exitFullScreen();
+                            widget.onRotateScreenClick?.call(true);
+                          }
                           _handler?.onPipClick?.call();
                         },
                         child: buildImage('icon_pip'),
