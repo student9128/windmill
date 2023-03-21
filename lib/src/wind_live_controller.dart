@@ -171,7 +171,7 @@ class WindLiveController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void leaveChannel() async{
+  Future leaveChannel() async{
     await _engine.leaveChannel();
     await _engine.destroy();
   }
