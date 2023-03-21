@@ -446,7 +446,7 @@ _showWidget() {
     super.didChangeAppLifecycleState(state);
     switch (state) {
       case AppLifecycleState.resumed:
-        _handler?.onResumed;
+        _handler?.onResumed?.call();
         if (!Constant.allowBackgroundPlay) {
           WindLiveController windLiveController =
               WindLiveController.of(context);
@@ -455,7 +455,7 @@ _showWidget() {
 
         break;
       case AppLifecycleState.paused:
-        _handler?.onPaused;
+        _handler?.onPaused?.call();
         if (!Constant.allowBackgroundPlay) {
           WindLiveController windLiveController =
               WindLiveController.of(context);
@@ -463,10 +463,10 @@ _showWidget() {
         }
         break;
       case AppLifecycleState.inactive:
-        _handler?.onInactive;
+        _handler?.onInactive?.call();
         break;
       case AppLifecycleState.detached:
-        _handler?.onDetached;
+        _handler?.onDetached?.call();
         break;
       default:
     }
