@@ -28,17 +28,6 @@ class LivePlayerWithControls extends StatefulWidget {
 }
 
 class _LivePlayerWithControlsState extends State<LivePlayerWithControls> {
-  @override
-  void initState() {
-    super.initState();
-    debugPrint('LivePlayer==========initState');
-  }
-
-  @override
-  void dispose() {
-    debugPrint('LivePlayer==========dispose');
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +43,6 @@ class _LivePlayerWithControlsState extends State<LivePlayerWithControls> {
     Widget buildPlayerWithControls(
         BuildContext context, WindLiveController windController) {
       WindLiveController windLiveController = WindLiveController.of(context);
-      debugPrint(
-          'liveVideo========joinChange=123---${windLiveController.remoteUid},${windLiveController.channelId}');
       return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.black,

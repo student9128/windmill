@@ -135,27 +135,19 @@ class WindLiveController extends ChangeNotifier {
   _addListener(RtcEngine engine) {
     engine.setEventHandler(RtcEngineEventHandler(warning: (warningCode) {
       _agoraHandler?.warning?.call(warningCode);
-      debugPrint('liveVideo========joinChange=warningCode=$warningCode');
     }, error: (errorCode) {
       _agoraHandler?.error?.call(errorCode);
-      debugPrint('liveVideo========joinChange=error=$errorCode');
     }, joinChannelSuccess: (channel, uid, elapsed) {
-      debugPrint('liveVideo========${_agoraHandler==null},${_agoraHandler?.joinChannelSuccess==null}');
       _agoraHandler?.joinChannelSuccess?.call(channel, uid, elapsed);
-      debugPrint(
-          'liveVideo========joinChange==success==channel=$channel,uid=$uid,elapsed=$elapsed');
     }, userJoined: (uid, elapsed) {
       _agoraHandler?.userJoined?.call(uid, elapsed);
-      debugPrint('liveVideo========joinChange=userJoined=$uid');
       _engine.setRemoteVideoStreamType(uid, VideoStreamType.Low);
       setRemoteUid(uid);
     }, userOffline: (uid, reason) {
       _agoraHandler?.userOffline?.call(uid, reason);
-      debugPrint('liveVideo========userOffline,reason=$reason');
       // setRemoteUid(-1);
     }, firstRemoteVideoFrame: (int uid, int width, int height, int elapsed) {
       _agoraHandler?.firstRemoteVideoFrame?.call(uid, width, height, elapsed);
-      debugPrint('liveVideo========first===');
     }, leaveChannel: (stats) {
       _agoraHandler?.leaveChannel?.call(stats);
     }, remoteVideoStateChanged: (int uid, VideoRemoteState state,
@@ -175,7 +167,6 @@ class WindLiveController extends ChangeNotifier {
   }
 
   void setRemoteUid(int uid) {
-    debugPrint('liveVideo========刷新===$uid');
     _remoteUid = uid;
     notifyListeners();
   }

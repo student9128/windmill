@@ -85,10 +85,6 @@ class _VideoPlayerWithControlsState extends State<VideoPlayerWithControls> {
 
     Widget buildPlayerWithControls(
         BuildContext context, WindController windController) {
-      debugPrint(
-          'widget.notifier.showVolumeProgress===${playerNotifier.showVolumeProgress}');
-      debugPrint(
-          'widget.notifier.showVolumeProgress=widget==${widget.notifier?.showVolumeProgress}');
       return Stack(
         children: [
           Center(
@@ -106,8 +102,6 @@ class _VideoPlayerWithControlsState extends State<VideoPlayerWithControls> {
               widget.onBackClick?.call();
             },
             onRotateScreenClick: (landscape) {
-              debugPrint(
-                  'wind========1====onBackClick$landscape,${widget.onRotateScreenClick == null}');
               widget.onRotateScreenClick?.call(landscape);
             },
           )

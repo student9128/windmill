@@ -111,19 +111,13 @@ class _PlayerControlsState extends State<PlayerControls>
     if (_currentPos == _oldPos && widget.controller.value.isPlaying) {
       _equalCount++;
       if (_equalCount > 5 && isPlaying) {
-        // showToast('暂停了');
-        // debugPrint('player======暂停了');
         isPlaying = false;
-        // _showPlay=true;
       }
     } else {
-      // debugPrint('player======开始播放');
       _oldPos = _currentPos;
       _equalCount = 0;
-      // showToast('开始播放');
       if (!isPlaying) {
         isPlaying = true;
-        // _showPlay=false;
       }
     }
     _handler?.onVideoProgress?.call(_currentPos == const Duration(seconds: 0)
@@ -182,7 +176,6 @@ _showWidget() {
                                   bool isFullScreen =
                                       MediaQuery.of(context).orientation ==
                                           Orientation.landscape;
-                                  debugPrint('wind========2====onBackClick$isFullScreen');
                                   if (isFullScreen) {
                                     windController.exitFullScreen();
                                     widget.onRotateScreenClick?.call(true);
@@ -520,10 +513,8 @@ _showWidget() {
     if (index != -1) {
       durationTemp = durationTemp.substring(0, index);
     }
-    // debugPrint('duration=${duration.toString()},index=$index,_duration=$_duration');
     if (colonIndex == 1) {
       var first = durationTemp.substring(0, 1);
-      // print('first=$first,,${first=='0'}');
       if (first == '0') {
         durationTemp = durationTemp.substring(2, durationTemp.length);
       } else {
@@ -631,7 +622,6 @@ _showWidget() {
         onVerticalDragStart: (v) {},
         onVerticalDragEnd: (v) {
           if(playerNotifier.isLocked)return;
-          debugPrint('wind============onVerticalDragEnd');
           playerNotifier.setShowVolumeProgress(false);
           playerNotifier.setShowBrightnessProgress(false);
           setState(() {});

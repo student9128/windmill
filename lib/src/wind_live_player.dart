@@ -44,70 +44,12 @@ class _WindLivePlayerState extends State<WindLivePlayer> {
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(listener);
     notifier = PlayerNotifier.init();
-    // WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-    //   notifier.setChannelName(widget.channelName);
-    // });
   }
-
-  // _initVolumeAndBrightness() async {
-  //   PerfectVolumeControl.hideUI = true;
-  //   double volume = await PerfectVolumeControl.getVolume();
-  //   _volumeProgress = volume;
-  //   _currentVolume = volume;
-  //   double brightness = await DeviceDisplayBrightness.getBrightness();
-  //   _brightnessProgress = brightness;
-  //   setState(() {});
-  // }
 
   @override
   void dispose() {
-    widget.controller.removeListener(listener);
     super.dispose();
-  }
-
-  Future<void> listener() async {
-    setState(() {
-      
-    });
-    debugPrint('wind===isControllerFullScreen=$isControllerFullScreen,_isFullScreen=$_isFullScreen');
-    // if (isControllerFullScreen && !_isFullScreen) {
-    //   _isFullScreen = isControllerFullScreen;
-    //   debugPrint('wind=========windVideo enterFull');
-    //   Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext context) {
-    //     return FullScreenLive(controller: widget.controller);
-    //   })).then((value){
-    //   widget.onRotateScreenClick?.call(false);
-    //     debugPrint('wind=========windVideo back');
-    //     // _initVolumeAndBrightness();
-    //     // widget.needRefresh?.call();
-    //     // widget.controller.refresh();
-    //   });
-    // //    SystemChrome.setPreferredOrientations([
-    // //   // DeviceOrientation.landscapeLeft,
-    // //   Platform.isIOS?
-    // //   DeviceOrientation.landscapeRight:DeviceOrientation.landscapeLeft,
-    // // ]);
-    // // setState(() {
-    // // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    // // });
-    // } else {
-    //   widget.onRotateScreenClick?.call(true);
-    //   Navigator.of(
-    //     context,
-    //   ).pop();
-    //   SystemChrome.setPreferredOrientations([
-    //     DeviceOrientation.portraitUp,
-    //     DeviceOrientation.portraitDown,
-    //   ]);
-    //   setState(() {
-    //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-    //       overlays: [SystemUiOverlay.top]);
-    //   });
-    //   debugPrint('wind=========windVideo exit');
-    //   _isFullScreen = false;
-    // }
   }
 
   setVolume(double dy) async {

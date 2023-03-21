@@ -155,7 +155,6 @@ class _WindVideoPlayerState extends State<WindVideoPlayer> {
         title: widget.title,
       );
     })).then((value) {
-      debugPrint('wind=========windVideo back');
       widget.needRefresh?.call();
     });
   }

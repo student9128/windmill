@@ -524,7 +524,6 @@ _showWidget() {
         onVerticalDragStart: (v) {},
         onVerticalDragEnd: (v) {
           if(playerNotifier.isLocked||!windController.enableGesture)return;
-          debugPrint('wind============onVerticalDragEnd');
           playerNotifier.setShowVolumeProgress(false);
           playerNotifier.setShowBrightnessProgress(false);
           setState(() {});

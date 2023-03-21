@@ -34,7 +34,6 @@ class _FullScreenLiveState extends State<FullScreenLive> {
     super.initState();
     widget.controller.addListener(listener);
     notifier = PlayerNotifier.init();
-    // _initVolumeAndBrightness();
   }
   @override
   void dispose() {
@@ -43,28 +42,7 @@ class _FullScreenLiveState extends State<FullScreenLive> {
   }
 
   Future<void> listener() async {
-    // if (isControllerFullScreen && !_isFullScreen) {
-    //   _isFullScreen = isControllerFullScreen;
-    //   debugPrint('wind=========fullScreen enterFull');
-    // } else if (_isFullScreen) {
-    //   Navigator.of(
-    //     context,
-    //     // rootNavigator: widget.controller.useRootNavigator,
-    //   ).pop();
-    //   _isFullScreen = false;
-    //   debugPrint('wind=========fullScreen exit');
-    // }
   }
-  // _initVolumeAndBrightness() async{
-  //   PerfectVolumeControl.hideUI = true;
-  //   double volume = await PerfectVolumeControl.getVolume();
-  //   _volumeProgress = volume;
-  //   _currentVolume = volume;
-  //   double brightness = await DeviceDisplayBrightness.getBrightness();
-  //   setState(() {
-
-  //   });
-  // }
   setVolume(double dy) async {
     _currentVolume = _currentVolume - dy / 100;
     if (_currentVolume <= 0) {
