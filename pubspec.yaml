@@ -1,6 +1,6 @@
 name: windmill
 description: A flutter project with video player and agora live player.
-version: 0.0.6
+version: 0.0.7
 homepage: https://github.com/student9128/windmill
 
 environment:

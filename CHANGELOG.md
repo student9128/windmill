@@ -1,3 +1,5 @@
+## 0.0.7
+add `setEnableWakeScreen` to keep screen on
 ## 0.0.6
 optimize code. fix statusbar does not disappear in some phone when switch landscape.
 ## 0.0.5
