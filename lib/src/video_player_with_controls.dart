@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:windmill/src/player_controls.dart';
@@ -43,7 +44,6 @@ class VideoPlayerWithControls extends StatefulWidget {
 
   final PlayerNotifier? notifier;
 
-
   const VideoPlayerWithControls(
       {Key? key,
       required this.volumeProgress,
@@ -68,12 +68,13 @@ class VideoPlayerWithControls extends StatefulWidget {
 
 class _VideoPlayerWithControlsState extends State<VideoPlayerWithControls> {
   @override
-  void initState(){
+  void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    var playerNotifier=Provider.of<PlayerNotifier>(context);
+    var playerNotifier = Provider.of<PlayerNotifier>(context);
     final WindController windController = WindController.of(context);
     double calculateAspectRatio(BuildContext context) {
       final size = MediaQuery.of(context).size;
@@ -84,8 +85,10 @@ class _VideoPlayerWithControlsState extends State<VideoPlayerWithControls> {
 
     Widget buildPlayerWithControls(
         BuildContext context, WindController windController) {
-          debugPrint('widget.notifier.showVolumeProgress===${playerNotifier.showVolumeProgress}');
-          debugPrint('widget.notifier.showVolumeProgress=widget==${widget.notifier?.showVolumeProgress}');
+      debugPrint(
+          'widget.notifier.showVolumeProgress===${playerNotifier.showVolumeProgress}');
+      debugPrint(
+          'widget.notifier.showVolumeProgress=widget==${widget.notifier?.showVolumeProgress}');
       return Stack(
         children: [
           Center(
@@ -100,17 +103,21 @@ class _VideoPlayerWithControlsState extends State<VideoPlayerWithControls> {
             title: widget.title,
             subTitle: widget.subtitle,
             onBackClick: () {
-          widget.onBackClick?.call();
+              widget.onBackClick?.call();
             },
-            onRotateScreenClick: (landscape){
-          debugPrint('wind========1====onBackClick$landscape,${widget.onRotateScreenClick==null}');
-          widget.onRotateScreenClick?.call(landscape);
+            onRotateScreenClick: (landscape) {
+              debugPrint(
+                  'wind========1====onBackClick$landscape,${widget.onRotateScreenClick == null}');
+              widget.onRotateScreenClick?.call(landscape);
             },
           )
         ],
       );
     }
 
+    if (windController.isFullScreen) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    }
     return Center(
       child: SizedBox(
         width: MediaQuery.of(context).size.width,

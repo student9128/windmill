@@ -38,6 +38,10 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     widget.controller.addListener(listener);
     notifier = PlayerNotifier.init();
   }
@@ -51,11 +55,6 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
   }
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     return Scaffold(
       backgroundColor: Colors.black,
       body: WindControllerProvider(
