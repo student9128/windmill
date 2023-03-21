@@ -444,11 +444,12 @@ _showWidget() {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-     WindLiveController windLiveController= WindLiveController.of(context);
     switch (state) {
       case AppLifecycleState.resumed:
         _handler?.onResumed;
         if (!Constant.allowBackgroundPlay) {
+          WindLiveController windLiveController =
+              WindLiveController.of(context);
           windLiveController.muteAllRemoteAudioStreams(false);
         }
 
@@ -456,6 +457,8 @@ _showWidget() {
       case AppLifecycleState.paused:
         _handler?.onPaused;
         if (!Constant.allowBackgroundPlay) {
+          WindLiveController windLiveController =
+              WindLiveController.of(context);
           windLiveController.muteAllRemoteAudioStreams(true);
         }
         break;
