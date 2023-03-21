@@ -37,7 +37,6 @@ class _WindLivePlayerState extends State<WindLivePlayer> {
   late PlayerNotifier notifier;
   double _volumeProgress = 0.0;
   double _currentVolume = 0.0;
-  final bool _isFullScreen = false;
 
   bool get isControllerFullScreen => widget.controller.isFullScreen;
 

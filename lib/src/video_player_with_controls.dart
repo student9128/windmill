@@ -74,7 +74,6 @@ class _VideoPlayerWithControlsState extends State<VideoPlayerWithControls> {
 
   @override
   Widget build(BuildContext context) {
-    var playerNotifier = Provider.of<PlayerNotifier>(context);
     final WindController windController = WindController.of(context);
     double calculateAspectRatio(BuildContext context) {
       final size = MediaQuery.of(context).size;
