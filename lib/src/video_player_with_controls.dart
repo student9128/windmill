@@ -4,6 +4,7 @@ import 'package:video_player/video_player.dart';
 import 'package:windmill/src/player_controls.dart';
 import 'package:windmill/src/player_notifier.dart';
 import 'package:windmill/src/wind_controller.dart';
+import 'package:wakelock/wakelock.dart';
 
 class VideoPlayerWithControls extends StatefulWidget {
   final double volumeProgress;
@@ -69,11 +70,27 @@ class _VideoPlayerWithControlsState extends State<VideoPlayerWithControls> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      WindController windController = WindController.of(context);
+      if (windController.enableWakeScreen) {
+        Wakelock.enable();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    WindController windController = WindController.of(context);
+    if (windController.enableWakeScreen) {
+      Wakelock.disable();
+    }
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final WindController windController = WindController.of(context);
+    if(windController.enableWakeScreen){}
     double calculateAspectRatio(BuildContext context) {
       final size = MediaQuery.of(context).size;
       final width = size.width;

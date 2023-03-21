@@ -16,6 +16,7 @@ dependencies:
   video_player: ^2.4.6
   agora_rtc_engine: ^5.2.0
   permission_handler: ^10.2.0  #权限请求
+  wakelock: ^0.6.2
 
 dev_dependencies:
   flutter_test:

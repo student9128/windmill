@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:windmill/src/live_player_controls.dart';
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as rtc_remote_view;
 import 'package:windmill/src/wind_live_controller.dart';
-
+import 'package:wakelock/wakelock.dart';
 class LivePlayerWithControls extends StatefulWidget {
   final double volumeProgress;
 
@@ -28,7 +28,25 @@ class LivePlayerWithControls extends StatefulWidget {
 }
 
 class _LivePlayerWithControlsState extends State<LivePlayerWithControls> {
+ @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      WindLiveController windLiveController = WindLiveController.of(context);
+      if (windLiveController.enableWakeScreen) {
+        Wakelock.enable();
+      }
+    });
+  }
 
+  @override
+  void dispose() {
+    WindLiveController windLiveController = WindLiveController.of(context);
+    if (windLiveController.enableWakeScreen) {
+      Wakelock.disable();
+    }
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final WindLiveController windLiveController =

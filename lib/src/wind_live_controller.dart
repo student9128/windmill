@@ -227,6 +227,14 @@ class WindLiveController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _enableWakeScreen = true;
+  bool get enableWakeScreen => _enableWakeScreen;
+  void setEnableWakeScreen(bool b) {
+    if (_enableWakeScreen == b) return;
+    _enableWakeScreen = b;
+    notifyListeners();
+  }
+
   Future<AbsEventHandlerImpl> createActionEvent() async {
     return AbsEventHandlerImpl.instance;
   }
