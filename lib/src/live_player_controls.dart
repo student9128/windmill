@@ -169,7 +169,7 @@ _showWidget() {
                               child: const Text(
                                 '直播中',
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
+                                    color:ColorUtils.mainColor, fontSize: 12),
                               ),
                             ),
                             windLiveController.isFullScreen?
