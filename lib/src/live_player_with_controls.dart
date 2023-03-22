@@ -41,10 +41,7 @@ class _LivePlayerWithControlsState extends State<LivePlayerWithControls> {
 
   @override
   void dispose() {
-    WindLiveController windLiveController = WindLiveController.of(context);
-    if (windLiveController.enableWakeScreen) {
-      Wakelock.disable();
-    }
+    Wakelock.disable();
     super.dispose();
   }
   @override

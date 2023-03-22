@@ -80,10 +80,7 @@ class _VideoPlayerWithControlsState extends State<VideoPlayerWithControls> {
 
   @override
   void dispose() {
-    WindController windController = WindController.of(context);
-    if (windController.enableWakeScreen) {
-      Wakelock.disable();
-    }
+    Wakelock.disable();
     super.dispose();
   }
 
