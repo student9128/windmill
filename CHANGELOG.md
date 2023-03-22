@@ -1,3 +1,5 @@
+## 0.0.8
+fix bug
 ## 0.0.7
 add `setEnableWakeScreen` to keep screen on
 ## 0.0.6
