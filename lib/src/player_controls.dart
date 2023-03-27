@@ -597,7 +597,7 @@ _showWidget() {
         },
         onHorizontalDragDown: (v) {},
         onHorizontalDragUpdate: (v) {
-          if (playerNotifier.isLocked) return;
+          if (playerNotifier.isLocked||!windController.enableGesture) return;
           var currentPos = widget.controller.value.position;
           var dx = v.delta.dx;
           currentPos += widget.controller.value.duration * (dx / 1000);
@@ -608,7 +608,7 @@ _showWidget() {
         onHorizontalDragEnd: (v) {},
         onVerticalDragDown: (v) {},
         onVerticalDragUpdate: (v) {
-          if(playerNotifier.isLocked)return;
+          if(playerNotifier.isLocked||!windController.enableGesture)return;
           var screenWidth = MediaQuery.of(context).size.width;
           var dy = v.delta.dy;
           var dx = v.localPosition.dx;
@@ -621,7 +621,7 @@ _showWidget() {
         onVerticalDragCancel: () {},
         onVerticalDragStart: (v) {},
         onVerticalDragEnd: (v) {
-          if(playerNotifier.isLocked)return;
+          if(playerNotifier.isLocked||!windController.enableGesture)return;
           playerNotifier.setShowVolumeProgress(false);
           playerNotifier.setShowBrightnessProgress(false);
           setState(() {});
