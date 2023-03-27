@@ -1,3 +1,5 @@
+## 0.0.9
+fix disable gesture does not work.
 ## 0.0.8
 fix bug
 ## 0.0.7
