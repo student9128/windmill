@@ -8,6 +8,7 @@ class VideoProgressBar extends StatefulWidget {
     this.onDragEnd,
     this.onDragStart,
     this.onDragUpdate,
+    this.progress,
     Key? key,
     // required this.barWidth,
     required this.barHeight,
@@ -19,7 +20,7 @@ class VideoProgressBar extends StatefulWidget {
 
   final VideoPlayerController controller;
   // final ChewieProgressColors colors;
-  final Function()? onDragStart;
+  final Function(bool isPlaying)? onDragStart;
   final Function()? onDragEnd;
   final Function()? onDragUpdate;
 
@@ -27,6 +28,7 @@ class VideoProgressBar extends StatefulWidget {
   final double barHeight;
   final double handleHeight;
   final bool drawShadow;
+  final Duration? progress;
 
   @override
   VideoProgressBarState createState() {
@@ -76,7 +78,7 @@ class VideoProgressBarState extends State<VideoProgressBar> {
           controller.pause();
         }
 
-        widget.onDragStart?.call();
+        widget.onDragStart?.call(_controllerWasPlaying);
       },
       onHorizontalDragUpdate: (DragUpdateDetails details) {
         if (!controller.value.isInitialized) {
@@ -111,6 +113,7 @@ class VideoProgressBarState extends State<VideoProgressBar> {
               barHeight: widget.barHeight,
               handleHeight: widget.handleHeight,
               drawShadow: widget.drawShadow,
+              progress: widget.progress
             ),
           ),
         ),
@@ -126,6 +129,7 @@ class _ProgressBarPainter extends CustomPainter {
     required this.barHeight,
     required this.handleHeight,
     required this.drawShadow,
+    this.progress,
   });
 
   VideoPlayerValue value;
@@ -134,6 +138,7 @@ class _ProgressBarPainter extends CustomPainter {
   final double barHeight;
   final double handleHeight;
   final bool drawShadow;
+  final Duration? progress;
   var backgroundPaint =Paint()..color=const Color(0xff999999);
   var bufferedPaint =Paint()..color=const Color(0xc9009E86);
   var playedPaint =Paint()..color=const Color(0xffFFB100);
@@ -161,8 +166,9 @@ class _ProgressBarPainter extends CustomPainter {
     if (!value.isInitialized) {
       return;
     }
-    final double playedPartPercent =
-        value.position.inMilliseconds / value.duration.inMilliseconds;
+    final double playedPartPercent = progress == null
+        ? value.position.inMilliseconds / value.duration.inMilliseconds
+        : progress!.inMilliseconds / value.duration.inMilliseconds;
     final double playedPart =
         playedPartPercent > 1 ? size.width : playedPartPercent * size.width;
     for (final DurationRange range in value.buffered) {

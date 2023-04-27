@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,10 +80,6 @@ class _PlayerControlsState extends State<PlayerControls>
   late Animation _changeOpacity;
   late Animation _changePosition;
   late Animation _lockOpacity;
-  Duration _currentPos = const Duration(seconds: 0);
-  Duration? _oldPos;
-  int _equalCount = 0;
-  bool isPlaying = true;
   final _handler = AbsEventHandlerImpl.instance.mHandler;
   late PlayerNotifier playerNotifier;
   Timer? _mTimer;
@@ -102,28 +99,13 @@ class _PlayerControlsState extends State<PlayerControls>
     _changePosition =
         Tween(begin: 0.0, end: -15.0).animate(_animationController);
      _lockOpacity = Tween(begin: 1.0, end: 0.0).animate(_lockController);
-    _hideWidget();
+     Future.delayed(const Duration(seconds: 3),(){_hideWidget();});
   }
 
   _updateState() {
     if (!mounted) return;
-    _currentPos = widget.controller.value.position;
-    if (_currentPos == _oldPos && widget.controller.value.isPlaying) {
-      _equalCount++;
-      if (_equalCount > 5 && isPlaying) {
-        isPlaying = false;
-      }
-    } else {
-      _oldPos = _currentPos;
-      _equalCount = 0;
-      if (!isPlaying) {
-        isPlaying = true;
-      }
-    }
-    _handler?.onVideoProgress?.call(_currentPos == const Duration(seconds: 0)
-        ? '00:00'
-        : _processDuration(_currentPos));
-    setState(() {});
+    Provider.of<PlayerNotifier>(context,listen: false).updateState(widget.controller);
+    _handler?.onVideoProgress?.call(playerNotifier.position);
   }
 
   @override
@@ -150,8 +132,16 @@ _showWidget() {
     _lockController.forward();
     playerNotifier.setShowWidget(false);
   }
-
-  _buildTopButtons() {
+  _onDragEnd() {
+    playerNotifier.progressDragEndX();
+  }
+  _onDragStart(bool isPlaying) {
+    playerNotifier.progressDragStartX(isPlaying: isPlaying);
+  }
+  _onDragUpdate() {
+    // playerNotifier.progressDragUpdateX(x)
+  } 
+ _buildTopButtons() {
     WindController windController = WindController.of(context);
     return SafeArea(
       left: false,
@@ -241,8 +231,6 @@ _showWidget() {
 
   _buildBottomButtons() {
     WindController windController = WindController.of(context);
-    var duration = _processDuration(widget.controller.value.duration);
-    var position = _processDuration(_currentPos);
     return AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
@@ -257,7 +245,7 @@ _showWidget() {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(position,
+                  Text(playerNotifier.position,
                       style: const TextStyle(color: Colors.white, fontSize: 12)),
                   Expanded(
                       child: Container(
@@ -267,10 +255,14 @@ _showWidget() {
                       barHeight: 3,
                       handleHeight: 6,
                       drawShadow: false,
+                      onDragStart: _onDragStart,
+                      onDragUpdate: _onDragUpdate,
+                      onDragEnd: _onDragEnd,
+                      progress:Platform.isIOS?playerNotifier.lastDuration:null
                     ),
                   )),
                   Text(
-                    duration,
+                    playerNotifier.duration,
                     style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
                   Row(
@@ -314,7 +306,18 @@ _showWidget() {
 
   _buildPlayButton() {
     return Center(
-      child: AnimatedBuilder(
+      child: playerNotifier.showProgress
+          ? Platform.isAndroid
+              ? const SizedBox(
+                width: 16,
+                height: 16,
+                  child: CircularProgressIndicator(color: ColorUtils.mainColor,strokeWidth: 2,),
+                )
+              : const CupertinoActivityIndicator(
+                  color: ColorUtils.mainColor,
+                  radius: 16,
+                )
+          : AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
           return Opacity(
@@ -332,7 +335,7 @@ _showWidget() {
                     _hideWidget();
                   }
                 },
-                child: widget.controller.value.isPlaying && isPlaying
+                child: widget.controller.value.isPlaying && playerNotifier.isPlaying
                     ? buildImage('icon_video_pause')
                     : buildImage('icon_video_play.jpg', isPNG: false)),
           );
@@ -570,6 +573,7 @@ _showWidget() {
     playerNotifier = Provider.of<PlayerNotifier>(context);
     return GestureDetector(
         onTap: () {
+             _mTimer?.cancel();
           if (playerNotifier.isLocked){
              if (playerNotifier.showLockIcon) {//锁屏的时候就动态调整锁屏图标
               _lockController.forward();
@@ -604,8 +608,17 @@ _showWidget() {
           widget.controller.seekTo(currentPos);
         },
         onHorizontalDragCancel: () {},
-        onHorizontalDragStart: (v) {},
-        onHorizontalDragEnd: (v) {},
+        onHorizontalDragStart: (v) {
+          if (playerNotifier.isLocked||!windController.enableGesture) return;
+          var _isPlaying=widget.controller.value.isPlaying;
+          if(_isPlaying)widget.controller.pause();
+          playerNotifier.progressDragStartX(isPlaying: _isPlaying);
+        },
+        onHorizontalDragEnd: (v) {
+          if (playerNotifier.isLocked||!windController.enableGesture) return;
+          playerNotifier.progressDragEndX();
+          if(playerNotifier.isPlayingWhenDragStart)widget.controller.play();
+        },
         onVerticalDragDown: (v) {},
         onVerticalDragUpdate: (v) {
           if(playerNotifier.isLocked||!windController.enableGesture)return;
