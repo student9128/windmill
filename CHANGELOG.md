@@ -1,3 +1,6 @@
+## 0.1.0
+- fix video progress bouncing when play m3u8 on iOS. 
+- add `enableDefinition` property.
 ## 0.0.9
 fix disable gesture does not work.
 ## 0.0.8
