@@ -17,7 +17,6 @@ class WindLiveController extends ChangeNotifier {
   final String token;
   final String channelName;
   final int optionalUid;
-  final List<double> playbackSpeeds;
   final bool autoInitialize;
   final bool autoPlay;
   final bool looping;
@@ -28,6 +27,8 @@ class WindLiveController extends ChangeNotifier {
   final bool allowMuting;
   final bool allowPlaybackSpeedChanging;
   final bool allowPip;
+  ///设置直播清晰度，默认显示该设置项
+  final bool enableDefinition;
   final Duration? startPos;
   final bool fullScreenByDefault;
   final WindLiveRoutePageBuilder? routePageBuilder;
@@ -63,7 +64,6 @@ class WindLiveController extends ChangeNotifier {
     required this.token,
     required this.channelName,
     required this.optionalUid,
-    this.playbackSpeeds = const [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
     this.autoInitialize = false,
     this.autoPlay = false,
     this.looping = false,
@@ -74,6 +74,7 @@ class WindLiveController extends ChangeNotifier {
     this.allowMuting = false,
     this.allowPlaybackSpeedChanging = true,
     this.allowPip = false,
+    this.enableDefinition=true,
     this.startPos,
     this.fullScreenByDefault = false,
     this.routePageBuilder,
@@ -81,7 +82,7 @@ class WindLiveController extends ChangeNotifier {
     this.deviceOrientationsOnEnterFullScreen,
     this.systemOverlaysAfterFullScreen = SystemUiOverlay.values,
     this.deviceOrientationsAfterFullScreen = DeviceOrientation.values,
-  }) : assert(playbackSpeeds.every((speed) => speed > 0)) {
+  }) : assert(appId.isNotEmpty) {
     // _initialize();
   }
 
@@ -101,17 +102,6 @@ class WindLiveController extends ChangeNotifier {
 
   Future _initialize() async {
     _agoraHandler = AbsEventHandlerImpl.instance.mAgoraHandler;
-    // await videoPlayerController.setLooping(looping);
-    // if(autoInitialize||autoPlay&&!videoPlayerController.value.isInitialized){
-    // await videoPlayerController.initialize();
-    // }
-    // if(autoPlay){
-    //   if(fullScreenByDefault){enterFullScreen();}
-    //   await videoPlayerController.play();
-    // }
-    // if(startPos!=null){
-    //   await videoPlayerController.seekTo(startPos!);
-    // }
     RtcEngineContext context = RtcEngineContext(appId);
     _engine = await RtcEngine.createWithContext(context);
     _isInit = true;

@@ -328,7 +328,7 @@ _showWidget() {
           );
         }));
   }
-  _buildPlaySpeedItem(String text, int index, bool isSelected) {
+  _buildDefinitionItem(String text, int index, bool isSelected) {
     var width = (MediaQuery.of(context).size.height - 32.0 - 16.0 * 3) / 4;
     return WindButton(
       onPressed: () {
@@ -355,13 +355,33 @@ _showWidget() {
           )),
     );
   }
-  _buildSettingModal() {
-    List speedList = ['高清', '流畅'];
+  _buildDefinitionWidget() {
+    List list = ['高清', '流畅'];
     List<Widget> speedWidgets = [];
-    for (int i = 0; i < speedList.length; i++) {
-      speedWidgets.add(_buildPlaySpeedItem(
-          speedList[i], i, Constant.currentSeedIndex == i ? true : false));
+    for (int i = 0; i < list.length; i++) {
+      speedWidgets.add(_buildDefinitionItem(
+          list[i], i, Constant.currentSeedIndex == i ? true : false));
     }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '清晰度',
+          style: TextStyle(color: ColorUtils.gray, fontSize: 12),
+          textAlign: TextAlign.left,
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: speedWidgets,
+          ),
+        ),
+      ],
+    );
+  }
+  _buildSettingModal() {
+    WindLiveController windLiveController = WindLiveController.of(context);
     return Container(
       width: MediaQuery.of(context).size.height,
       height: MediaQuery.of(context).size.height,
@@ -374,18 +394,8 @@ _showWidget() {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '清晰度',
-            style: TextStyle(color: ColorUtils.gray, fontSize: 12),
-            textAlign: TextAlign.left,
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: speedWidgets,
-            ),
-          ),
+          windLiveController.enableDefinition?
+          _buildDefinitionWidget():const SizedBox(),
           Container(
             margin: const EdgeInsets.only(top: 20.0),
             child: const Text('其他',
