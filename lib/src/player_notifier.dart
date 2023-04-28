@@ -199,8 +199,6 @@ class PlayerNotifier extends ChangeNotifier {
   String get duration => _duration;
   String _position = '';
   String get position => _position;
-  String _lastPosition = '';
-  bool _showBlank = false;
   Duration _lastDuration = Duration.zero;
   Duration get lastDuration => _lastDuration;
   ///ios端播放m3u8的时，拖动进度条会出现进度条跳动的现象
