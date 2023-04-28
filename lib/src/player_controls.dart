@@ -482,52 +482,7 @@ _showWidget() {
       ),
     );
   }
-  //   Stack _buildSettingModalContainer() {
-  //   return Stack(
-  //     children: [
-  //       WindButton(
-  //     onPressed: () {
-  //           _hideSettingModal();
-  //         },
-  //         child: Container(
-  //           // color: Colors.yellow,
-  //           width: MediaQuery.of(context).size.width,
-  //           height: MediaQuery.of(context).size.height,
-  //         ),
-  //       ),
-  //       AnimatedBuilder(
-  //           animation: _settingAnimController,
-  //           builder: (context, child) {
-  //             return Positioned(
-  //                 right: 0,
-  //                 child: Transform.translate(
-  //                     offset: Offset(
-  //                         double.parse(_settingModalRight.value.toString()), 0),
-  //                     child: _buildSettingModal()));
-  //           })
-  //     ],
-  //   );
-  // }
 
-  _processDuration(Duration duration) {
-    var durationTemp = duration.toString();
-    var index = durationTemp.indexOf('.');
-    var colonIndex = durationTemp.indexOf(":");
-    if (index != -1) {
-      durationTemp = durationTemp.substring(0, index);
-    }
-    if (colonIndex == 1) {
-      var first = durationTemp.substring(0, 1);
-      if (first == '0') {
-        durationTemp = durationTemp.substring(2, durationTemp.length);
-      } else {
-        durationTemp = '0$durationTemp';
-      }
-    } else {
-      durationTemp = '0$durationTemp';
-    }
-    return durationTemp;
-  }
   _showSettingModal() {
     _settingAnimController.forward();
     playerNotifier.setShowSettingModal(true);
@@ -610,9 +565,9 @@ _showWidget() {
         onHorizontalDragCancel: () {},
         onHorizontalDragStart: (v) {
           if (playerNotifier.isLocked||!windController.enableGesture) return;
-          var _isPlaying=widget.controller.value.isPlaying;
-          if(_isPlaying)widget.controller.pause();
-          playerNotifier.progressDragStartX(isPlaying: _isPlaying);
+          var isPlaying=widget.controller.value.isPlaying;
+          if(isPlaying)widget.controller.pause();
+          playerNotifier.progressDragStartX(isPlaying: isPlaying);
         },
         onHorizontalDragEnd: (v) {
           if (playerNotifier.isLocked||!windController.enableGesture) return;

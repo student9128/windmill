@@ -165,6 +165,7 @@ class PlayerNotifier extends ChangeNotifier {
         _isPlaying = true;
       }
     }
+    _processTotalDuration(controller.value.duration);
     _processPosition(controller, _currentPos);
   }
 
@@ -187,6 +188,12 @@ class PlayerNotifier extends ChangeNotifier {
       durationTemp = '0$durationTemp';
     }
     return durationTemp;
+  }
+  _processTotalDuration(Duration duration) {
+    String temp = _processDuration(duration);
+    if (_duration == temp) return;
+    _duration = temp;
+    notifyListeners();
   }
   String _duration = '';
   String get duration => _duration;
