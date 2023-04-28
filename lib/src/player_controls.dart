@@ -79,6 +79,7 @@ class _PlayerControlsState extends State<PlayerControls>
   late AnimationController _animationController, _settingAnimController,_lockController;
   late Animation _changeOpacity;
   late Animation _changePosition;
+  late Animation _subtitlePosition;
   late Animation _lockOpacity;
   final _handler = AbsEventHandlerImpl.instance.mHandler;
   late PlayerNotifier playerNotifier;
@@ -96,8 +97,8 @@ class _PlayerControlsState extends State<PlayerControls>
         AnimationController(duration: const Duration(milliseconds:300), vsync: this);
     _changeOpacity =
         Tween(begin: 1.0, end: 0.0).animate(_animationController); //修改透明度
-    _changePosition =
-        Tween(begin: 0.0, end: -15.0).animate(_animationController);
+    _changePosition = Tween(begin: 0.0, end: -15.0).animate(_animationController);
+    _subtitlePosition = Tween(begin: 0.0, end: 21.0).animate(_animationController);
      _lockOpacity = Tween(begin: 1.0, end: 0.0).animate(_lockController);
      Future.delayed(const Duration(seconds: 3),(){_hideWidget();});
   }
@@ -118,7 +119,7 @@ class _PlayerControlsState extends State<PlayerControls>
     super.dispose();
   }
 
-_showWidget() {
+  _showWidget() {
     _animationController.reverse();
     _lockController.reverse();
     playerNotifier.setShowWidget(true);
@@ -298,10 +299,22 @@ _showWidget() {
   }
 
   _buildSubtitles() {
-    return Text(
-      widget.subTitle,
-      style: const TextStyle(color: Colors.white),
-    );
+    WindController windController = WindController.of(context);
+    return AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          return Transform.translate(
+            offset: Offset(0.0, _subtitlePosition.value),
+            child:Container(
+              padding: EdgeInsets.symmetric(horizontal:windController.isFullScreen?32:16),
+              child: Text(
+              widget.subTitle,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white),
+            ),
+            ) ,
+          );
+        });
   }
 
   _buildPlayButton() {

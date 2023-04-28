@@ -74,6 +74,7 @@ class _LivePlayerControlsState extends State<LivePlayerControls>
   late AnimationController _animationController, _settingAnimController,_lockController;
   late Animation _changeOpacity;
   late Animation _changePosition;
+  late Animation _subtitlePosition;
   late Animation _lockOpacity;
   bool isPlaying = true;
   final _handler = AbsEventHandlerImpl.instance.mHandler;
@@ -94,6 +95,7 @@ class _LivePlayerControlsState extends State<LivePlayerControls>
         Tween(begin: 1.0, end: 0.0).animate(_animationController); //修改透明度
     _changePosition =
         Tween(begin: 0.0, end: -15.0).animate(_animationController);
+    _subtitlePosition = Tween(begin: 0.0, end: 21.0).animate(_animationController);
     _lockOpacity = Tween(begin: 1.0, end: 0.0).animate(_lockController);
     _hideWidget();
   }
@@ -267,10 +269,22 @@ _showWidget() {
   }
 
   _buildSubtitles() {
-    return Text(
-      widget.subTitle,
-      style: const TextStyle(color: Colors.white),
-    );
+    WindLiveController windLiveController = WindLiveController.of(context);
+    return AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          return Transform.translate(
+            offset: Offset(0.0, _subtitlePosition.value),
+            child:Container(
+              padding: EdgeInsets.symmetric(horizontal:windLiveController.isFullScreen?32:16),
+              child: Text(
+              widget.subTitle,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white),
+            ),
+            ) ,
+          );
+        });
   }
 
   _buildPlayButton() {
